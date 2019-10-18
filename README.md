@@ -1,4 +1,17 @@
 
+# Azure Sentinel Notebooks
+Jupyter notebooks are an interactive development and data manipulation environment hosted in a browser. The open API supported by Azure Sentinel allows you to use Jupyter notebooks to query, transform, analyze and visualize Azure Sentinel data. This makes notebooks a powerful addition to Azure Sentinel and is especially well-suited to ad-hoc investigations, hunting or customized workflows.
+
+More information on getting started with [Azure Sentinel and Azure Notebooks](https://docs.microsoft.com/en-us/azure/sentinel/notebooks)
+
+This repository contains notebooks contributed by Microsoft and the community to assist hunting and investigation tasks in Azure Sentinel.  They tend to be one of three types:
+- Simple How-To notebooks like the Get Started notebook.
+- Sample notebooks. These are longer and are meant to be instructional examples following a real or simulated hunt or investigation.
+-	Exploration notebooks. These are meant to be used as they are or with your own customizations to explore specific hunting and investigation scenarios. Examples of this type include the Entity explorer series. (“Entity” refers to items such as hosts, IP addresses, accounts, URLs, etc.)
+
+Read more about the use of Jupter notebooks in Azure Sentinel on the [Azure Sentinel Technical Community blog](https://techcommunity.microsoft.com/t5/Azure-Sentinel/bg-p/AzureSentinelBlog)
+Read more about the [Azure Notebooks Service](https://docs.microsoft.com/en-us/azure/notebooks/).
+
 # Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
