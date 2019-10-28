@@ -1,0 +1,7 @@
+{
+  "tenant_id": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+  "subscription_id": "{{cookiecutter.subscription_id}}",
+  "resource_group": "{{cookiecutter.resource_group}}",
+  "workspace_id": "52b1ab41-869e-4138-9e40-2a4457f09bf0",
+  "workspace_name": "{{cookiecutter.workspace_name}}"
+}

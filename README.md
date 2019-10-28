@@ -7,10 +7,23 @@ More information on getting started with [Azure Sentinel and Azure Notebooks](ht
 This repository contains notebooks contributed by Microsoft and the community to assist hunting and investigation tasks in Azure Sentinel.  They tend to be one of three types:
 - Simple How-To notebooks like the Get Started notebook.
 - Sample notebooks. These are longer and are meant to be instructional examples following a real or simulated hunt or investigation.
--	Exploration notebooks. These are meant to be used as they are or with your own customizations to explore specific hunting and investigation scenarios. Examples of this type include the Entity explorer series. (“Entity” refers to items such as hosts, IP addresses, accounts, URLs, etc.)
+- Exploration notebooks. These are meant to be used as they are or with your own customizations to explore specific hunting and investigation scenarios. Examples of this type include the Entity explorer series. (“Entity” refers to items such as hosts, IP addresses, accounts, URLs, etc.)
 
-Read more about the use of Jupter notebooks in Azure Sentinel on the [Azure Sentinel Technical Community blog](https://techcommunity.microsoft.com/t5/Azure-Sentinel/bg-p/AzureSentinelBlog)
-Read more about the [Azure Notebooks Service](https://docs.microsoft.com/en-us/azure/notebooks/).
+## Clone this repo to Azure notebooks
+<a href="https://notebooks.azure.com/import/gh/Azure/Azure-Sentinel-Notebooks"><img src="https://notebooks.azure.com/launch.png" /></a>
+
+## More Information
+- Read more about the use of Jupter notebooks in Azure Sentinel on the [Azure Sentinel Technical Community blog](https://techcommunity.microsoft.com/t5/Azure-Sentinel/bg-p/AzureSentinelBlog)
+- Read more about the [Azure Notebooks Service](https://docs.microsoft.com/en-us/azure/notebooks/).
+
+- View [Get Started](https://nbviewer.jupyter.org/github/Azure/Azure-Sentinel/blob/master/Notebooks/Get%20Started.ipynb) notebook
+- View sample notebooks in the Sample-Notebooks folder
+- How tos and Troubleshooting in the How-Tos folder
+
+## Feedback
+For questions or feedback, please contact AzureSentinel@microsoft.com
+
+---
 
 # Contributing
 
