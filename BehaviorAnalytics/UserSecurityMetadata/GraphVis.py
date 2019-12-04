@@ -1,3 +1,4 @@
+# Copyright (c) Microsoft Corporation. Licensed under the MIT license.
 from pathlib import Path
 from string import Template
 from NodeEdge import Node, Edge
