@@ -1,3 +1,4 @@
+# Copyright (c) Microsoft Corporation. Licensed under the MIT license.
 from validate_email import validate_email
 from Utils import executeProcess
 from NodeEdge import Node, DrawableNode
