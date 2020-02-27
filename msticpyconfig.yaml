@@ -1,0 +1,32 @@
+QueryDefinitions:
+AzureSentinel:
+  Workspaces:
+    Default:
+      WorkspaceId: your-workspace-id
+      TenantId: your-tenant-id
+    WorkspaceAlpha:
+      WorkspaceId: alpha-workspace-id
+      TenantId: alpha-tenant-id
+TIProviders:
+  OTX:
+    Args:
+      AuthKey: OTX-API-Key
+    Primary: True
+    Provider: "OTX" # Explicitly name provider to override
+  VirusTotal:
+    Args:
+      AuthKey: VT-API-Key
+    Primary: False
+    Provider: "VirusTotal"
+  XForce:
+    Args:
+      ApiID: XForce-API-ID
+      AuthKey: XForce-Auth-Key
+    Primary: True
+    Provider: "XForce"
+  AzureSentinel:
+    Args:
+      workspace_id: your-workspace-id
+      tenant_id: your-tenant-id
+    Primary: True
+    Provider: "AzSTI"
