@@ -328,3 +328,5 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
+**/.ipynb_checkpoints/**
+**/Kqlmagic_temp_files/**
