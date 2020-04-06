@@ -6,7 +6,10 @@
 
 import setuptools
 
-INSTALL_REQUIRES = ['azure>=4.0.0']
+INSTALL_REQUIRES = ['applicationinsights>=0.11.9', 
+                    'azure-loganalytics>=0.1.0', 
+                    'azure-mgmt-loganalytics>=0.2.0',
+                    'azure-common>=1.1.25']
 
 #with open("README.rst", "r") as f:
 #    long_description_text = f.read()
@@ -15,7 +18,7 @@ with open("LICENSE.txt", "r") as fh:
 
 setuptools.setup(
     name="Azure-Sentinel-Utilities",
-    version="0.5.12",
+    version="0.5.15",
     author="Azure Sentinel Notebooks Devs",
     author_email="zhzhao@microsoft.com",
     description="AZURE SENTINEL NOTEBOOKS PYTHON TOOLS: \
