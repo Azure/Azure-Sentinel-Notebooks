@@ -1,3 +1,6 @@
+## For details of how to configure settings in this file, please
+## see https://msticpy.readthedocs.io/en/latest/getting_started/msticpyconfig.html
+##
 AzureSentinel:
   Workspaces:
     # Workspace used if you don't explicitly name a workspace when creating WorkspaceConfig
