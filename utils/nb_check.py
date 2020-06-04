@@ -18,7 +18,9 @@ MISSING_PKG_ERR = """
     <h4>Please install this now</h4>
     """
 MIN_PYTHON_VER_DEF = (3, 6)
-MSTICPY_REQ_VERSION = (0, 2, 7)
+MSTICPY_REQ_VERSION = (0, 5, 0)
+
+
 def check_python_ver(min_py_ver=MIN_PYTHON_VER_DEF):
     """
     Checks the current version of the Python kernel.
