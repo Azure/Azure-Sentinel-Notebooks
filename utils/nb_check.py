@@ -22,7 +22,7 @@ MISSING_PKG_ERR = """
     """
 MIN_PYTHON_VER_DEF = (3, 6)
 MSTICPY_REQ_VERSION = (0, 2, 7)
-MAX_SETUP_WAIT = 160
+MAX_SETUP_WAIT = 240
 LOCKFILE = "~/.mpnb.lock"
 SETUP_LOG = "~/.nb.setup.log"
 EXPECTED_LOG_LINES = 300
@@ -37,8 +37,11 @@ class ProgressBar(object):
         self._progress = 0
 
     def _repr_html_(self):
-        bar_html = "<progress style='width:30%%' max='%d' value='%d'></progress> %% complete"
-        return bar_html % (self.capacity, self.progress)
+        bar_html = (
+            "<progress style='width:30%%' max='%d' value='%d'>"
+            + "</progress> %d%% complete"
+        )
+        return bar_html % (self.capacity, self.progress, self.progress)
 
     def display(self):
         display(self, display_id=self._display_id)
@@ -83,7 +86,7 @@ def check_container_install():
     setup_finished = True
     if Path(LOCKFILE).expanduser().is_file():
         _html_out("Ongoing environment setup detected.", bold=True)
-        _html_out("We recommend waiting for this to complete. (max %ss)" % MAX_SETUP_WAIT)
+        _html_out("We recommend waiting for this to complete. (3-5 min)")
         p_bar.display()
         _html_out("""
             Type 'I','I' (or hit the kernel interrupt button) to stop waiting
