@@ -8,6 +8,7 @@ import os
 import sys
 from pathlib import Path
 from time import sleep
+from typing import Tuple
 from binascii import hexlify
 from IPython.display import display, clear_output, HTML
 
@@ -23,6 +24,8 @@ MIN_PYTHON_VER_DEF = (3, 6)
 MSTICPY_REQ_VERSION = (0, 2, 7)
 MAX_SETUP_WAIT = 160
 LOCKFILE = "~/.mpnb.lock"
+SETUP_LOG = "~/.nb.setup.log"
+EXPECTED_LOG_LINES = 300
 
 
 class ProgressBar(object):
@@ -34,8 +37,8 @@ class ProgressBar(object):
         self._progress = 0
 
     def _repr_html_(self):
-        bar_html = "<progress style='width:30%%' max='%d' value='%d'></progress> %ss"
-        return bar_html % (self.capacity, self.progress, self.progress)
+        bar_html = "<progress style='width:30%%' max='%d' value='%d'></progress> %% complete"
+        return bar_html % (self.capacity, self.progress)
 
     def display(self):
         display(self, display_id=self._display_id)
@@ -53,7 +56,7 @@ class ProgressBar(object):
         self.update()
 
 
-def html_out(text, font_col=None, bold=False):
+def _html_out(text, font_col=None, bold=False):
     """Display HTML string with optional font color and bold."""
     out_html = text
     if font_col:
@@ -63,60 +66,79 @@ def html_out(text, font_col=None, bold=False):
     display(HTML(out_html))
 
 
+def _read_log_file_lines(file_name) -> int:
+    log_file = Path(file_name).expanduser()
+    if not log_file.exists():
+        return 0
+    with open(log_file, "r") as f_handle:
+        return len(f_handle.readlines())
+
+
 def check_container_install():
     """Check for current container setup and wait for completion."""
-    p_bar = ProgressBar(MAX_SETUP_WAIT)
+    p_bar = ProgressBar(100)
 
-    html_out("Checking for environment setup in progress...", bold=True)
+    _html_out("Checking for environment setup in progress...", bold=True)
     sleep(1)
+    setup_finished = True
     if Path(LOCKFILE).expanduser().is_file():
-        html_out("Ongoing environment setup detected.", bold=True)
-        html_out("We recommend waiting for this to complete. (max %ss)" % MAX_SETUP_WAIT)
+        _html_out("Ongoing environment setup detected.", bold=True)
+        _html_out("We recommend waiting for this to complete. (max %ss)" % MAX_SETUP_WAIT)
         p_bar.display()
-        html_out("""
-        Type 'I','I' (or hit the kernel interrupt button) to stop waiting
-        for this and continue with manual installation)
+        _html_out("""
+            Type 'I','I' (or hit the kernel interrupt button) to stop waiting
+            for this and continue with manual installation)
         """)
-
+        setup_finished = False
     try:
-        cyc_count = 0
-        for cyc_count in range(MAX_SETUP_WAIT):
-            p_bar.progress = MAX_SETUP_WAIT - cyc_count
-            if not Path(LOCKFILE).expanduser().is_file():
+        retry = True
+        while retry:
+            for _ in range(MAX_SETUP_WAIT):
+                file_len = _read_log_file_lines(SETUP_LOG)
+                p_bar.progress = int(100 * file_len / EXPECTED_LOG_LINES)
+                if not Path(LOCKFILE).expanduser().is_file():
+                    p_bar.progress = 100
+                    setup_finished = True
+                    break
+                sleep(1)
+            if setup_finished:
                 break
-            sleep(1)
+            resp = input("Continue waiting (y/n)?")  # nosec
+            if resp.casefold().startswith("n"):
+                break
 
         clear_output()
-        if cyc_count >= MAX_SETUP_WAIT - 1:
-            html_out(
+        if not setup_finished:
+            _html_out(
                 "Container environment setup is not yet finished or may have stalled.",
                 "orange"
             )
-            html_out("""
+            _html_out("""
                 We recommend that you re-run this cell.<br>
-                Alternatively, you can proceed and install msticpy and dependent<br>
+                Alternatively, you can proceed and install msticpy and its<br>
                 dependencies from the notebook.<br>
-                Note: if you do this, you may see some installation conflicts/warnings.
+                Note: if you do this, you may see some installation conflicts/warnings,
                 although these are usually safe to ignore.
             """)
         else:
-            html_out("Environment setup has completed.", "green")
+            _html_out("Environment setup has completed.", "green")
     except KeyboardInterrupt:
         clear_output()
-        html_out("\nInstallation wait interrupted.", "orange")
-        html_out("""
+        _html_out("\nInstallation wait interrupted.", "orange")
+        _html_out("""
             Note: you may see some installation conflicts/warnings
             if you choose to proceed with installation from the
             notebook - these are usually safe to ignore.
         """)
 
-    html_out("Continuing wth notebook setup.")
+    _html_out("Continuing wth notebook setup.")
     sleep(2)
+    return setup_finished
 
 
 def check_python_ver(min_py_ver=MIN_PYTHON_VER_DEF):
     """
-    Checks the current version of the Python kernel.
+    Check the current version of the Python kernel.
 
     Parameters
     ----------
@@ -129,9 +151,9 @@ def check_python_ver(min_py_ver=MIN_PYTHON_VER_DEF):
         If the Python version does not support the notebook.
 
     """
-    html_out("Checking Python kernel version...")
+    _html_out("Checking Python kernel version...")
     if sys.version_info < min_py_ver:
-        html_out(
+        _html_out(
             """
             <h3><font color='red'>This notebook requires a different notebook
             (Python) kernel version.</h3></font>
@@ -141,7 +163,7 @@ def check_python_ver(min_py_ver=MIN_PYTHON_VER_DEF):
             this cell.<br><br>
             """ % min_py_ver
         )
-        html_out(
+        _html_out(
             """
             Please see the <b><a href="./TroubleShootingNotebooks.ipynb">
             TroubleShootingNotebooks</a></b>
@@ -150,16 +172,17 @@ def check_python_ver(min_py_ver=MIN_PYTHON_VER_DEF):
         )
         raise RuntimeError("Python %s.%s or later kernel is required." % min_py_ver)
 
-    html_out(
+    _html_out(
         "Python kernel version %s.%s.%s OK" % (
             sys.version_info[0], sys.version_info[1], sys.version_info[2]
         ),
         "green"
     )
 
+
 def check_mp_ver(min_msticpy_ver=MSTICPY_REQ_VERSION):
     """
-    Checks the current version of .
+    Check the current version of MSTICPY.
 
     Parameters
     ----------
@@ -168,26 +191,28 @@ def check_mp_ver(min_msticpy_ver=MSTICPY_REQ_VERSION):
 
     Raises
     ------
+    ImportError
+        If the required version of msticpy cannot be imported.
     RuntimeError
-        If the Python version does not support the notebook.
+        If the user opts not to install/upgrade msticpy.
 
     """
     check_container_install()
-    html_out("Checking msticpy version...")
+    _html_out("Checking msticpy version...")
     try:
-        import msticpy
+        import msticpy  # pylint: disable=import-outside-toplevel
         mp_version = tuple([int(v) for v in msticpy.__version__.split(".")])
         if mp_version < min_msticpy_ver:
             raise ImportError("msticpy %s.%s.%s or later is needed." % min_msticpy_ver)
 
     except ImportError:
-        html_out(MISSING_PKG_ERR.format(package="msticpy"))
+        _html_out(MISSING_PKG_ERR.format(package="msticpy"))
         sleep(1)
-        resp = input("Install? (y/n)")
+        resp = input("Install? (y/n)")  # nosec
         if resp.casefold().startswith("y"):
             raise ImportError("Install msticpy")
 
-        html_out(
+        _html_out(
             """
             <h3><font color='red'>The notebook cannot be run without
             the correct version of '<b>%s</b>' (%s.%s.%s or later)
@@ -198,4 +223,4 @@ def check_mp_ver(min_msticpy_ver=MSTICPY_REQ_VERSION):
             """ % ("msticpy", *min_msticpy_ver)
         )
         raise RuntimeError("msticpy %s.%s.%s or later is required." % min_msticpy_ver)
-    html_out("msticpy version %s.%s.%s OK" % mp_version)
+    _html_out("msticpy version %s.%s.%s OK" % mp_version)
