@@ -8,13 +8,10 @@ import os
 import sys
 from pathlib import Path
 from time import sleep
-from typing import Tuple
 from binascii import hexlify
 from IPython.display import display, clear_output, HTML
 
 
-warn_mssg = []
-err_mssg = []
 MISSING_PKG_ERR = """
     <h3><font color='orange'>The package '<b>{package}</b>' is not
     installed or has an incorrect version</font></h3>
@@ -22,7 +19,6 @@ MISSING_PKG_ERR = """
     """
 MIN_PYTHON_VER_DEF = (3, 6)
 MSTICPY_REQ_VERSION = (0, 2, 7)
-MAX_SETUP_WAIT = 240
 LOCKFILE = "~/.mpnb.lock"
 SETUP_LOG = "~/.nb.setup.log"
 EXPECTED_LOG_LINES = 300
@@ -94,21 +90,14 @@ def check_container_install():
         """)
         setup_finished = False
     try:
-        retry = True
-        while retry:
-            for _ in range(MAX_SETUP_WAIT):
-                file_len = _read_log_file_lines(SETUP_LOG)
-                p_bar.progress = int(100 * file_len / EXPECTED_LOG_LINES)
-                if not Path(LOCKFILE).expanduser().is_file():
-                    p_bar.progress = 100
-                    setup_finished = True
-                    break
-                sleep(1)
-            if setup_finished:
+        while not setup_finished:
+            file_len = _read_log_file_lines(SETUP_LOG)
+            p_bar.progress = int(100 * file_len / EXPECTED_LOG_LINES)
+            if not Path(LOCKFILE).expanduser().is_file():
+                p_bar.progress = 100
+                setup_finished = True
                 break
-            resp = input("Continue waiting (y/n)?")  # nosec
-            if resp.casefold().startswith("n"):
-                break
+            sleep(1)
 
         clear_output()
         if not setup_finished:
