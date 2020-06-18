@@ -82,6 +82,7 @@ def check_container_install():
     setup_finished = True
     if Path(LOCKFILE).expanduser().is_file():
         _html_out("Ongoing environment setup detected.", bold=True)
+        _html_out("This is needed when your Azure Notebooks compute environment first starts.")
         _html_out("We recommend waiting for this to complete. (3-5 min)")
         p_bar.display()
         _html_out("""
