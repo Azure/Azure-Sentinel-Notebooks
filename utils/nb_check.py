@@ -4,6 +4,7 @@
 # license information.
 # --------------------------------------------------------------------------
 """Checker for Python and msticpy versions."""
+import os
 import sys
 from IPython.display import display, HTML
 
@@ -65,6 +66,8 @@ def check_python_ver(min_py_ver=MIN_PYTHON_VER_DEF):
         )
     )
 
+    _check_nteract()
+
 
 # pylint: disable=import-outside-toplevel
 def check_mp_ver(min_msticpy_ver=MSTICPY_REQ_VERSION):
@@ -113,3 +116,22 @@ def check_mp_ver(min_msticpy_ver=MSTICPY_REQ_VERSION):
             "msticpy %s.%s.%s or later is required." % min_msticpy_ver
         )
     display(HTML("msticpy version %s.%s.%s OK" % mp_version))
+
+
+_NTERACT_MSSG = """
+<b>Azure ML detected</b><br>
+It looks like this notebook is running in an Azure Machine Learning workspace.
+If you using the AzureML native notebook interface
+(i.e. not Jupyter or Jupyter lab) we need to adjust a
+setting for the UI to behave properly.
+Ignoring or answering "n" will not affect the functionality of the notebook
+but you may see some extraneous UI elements being displayed.
+"""
+
+
+def _check_nteract():
+    if os.environ.get("USER", "").casefold() == "azureuser":
+        display(HTML(_NTERACT_MSSG))
+        set_app = input("Configure for Azure ML Notebooks? (y/n)")  # nosec
+        if set_app.casefold().startswith("y"):
+            os.environ["KQLMAGIC_NOTEBOOK_APP"] = "nteract"
