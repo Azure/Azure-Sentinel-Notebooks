@@ -88,10 +88,10 @@ def check_mp_ver(min_msticpy_ver=MSTICPY_REQ_VERSION):
     display(HTML("Checking msticpy version..."))
     try:
         import msticpy
-
+        wrong_ver_err = "msticpy %s.%s.%s or later is needed." % min_msticpy_ver
         mp_version = tuple([int(v) for v in msticpy.__version__.split(".")])
         if mp_version < min_msticpy_ver:
-            raise ImportError("msticpy %s.%s.%s or later is needed." % min_msticpy_ver)
+            raise ImportError(wrong_ver_err)
 
     except ImportError:
         display(HTML(MISSING_PKG_ERR.format(package="msticpy")))
@@ -112,9 +112,8 @@ def check_mp_ver(min_msticpy_ver=MSTICPY_REQ_VERSION):
                 % ("msticpy", *min_msticpy_ver)
             )
         )
-        raise RuntimeError(
-            "msticpy %s.%s.%s or later is required." % min_msticpy_ver
-        )
+        raise RuntimeError(wrong_ver_err)
+
     display(HTML("msticpy version %s.%s.%s OK" % mp_version))
 
 
