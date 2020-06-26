@@ -4,6 +4,7 @@ import nbformat
 
 
 PY36_KERNEL = {"name": ["python36", "python3"], "display_name": ["Python 3.6", "Python 3"], 'language': 'python'}
+IP_KERNEL_SPEC = {"python36": {"name": "python36", "display_name": "Python 3.6", "language": "python"}
 
 
 def check_notebooks(nb_path):
@@ -12,10 +13,10 @@ def check_notebooks(nb_path):
     for nb_path in notebooks:
         if ".ipynb_checkpoints" in str(nb_path):
             continue
-        nb = nbformat.read(str(nb_path), as_version=4.0)
-        kernelspec = nb.get("metadata", {}).get("kernelspec", None)
         print(str(nb_path))
         print("-" * len(str(nb_path)))
+        nb = nbformat.read(str(nb_path), as_version=4.0)
+        kernelspec = nb.get("metadata", {}).get("kernelspec", None)
         nb_ok = True
         for config in PY36_KERNEL:
             if not kernelspec:
@@ -25,10 +26,32 @@ def check_notebooks(nb_path):
                 print(f"Should be: '{PY36_KERNEL[config]}'  Found:'{kernelspec[config]}'")
                 nb_ok = False
         if nb_ok:
-            print(f"{kernelspec['name']} ok"))
+            print(f"{kernelspec['name']} ok")
         else:
             print()
 
+def set_kernelspec(nb_path):
+    notebooks = Path(nb_path).glob("**/*.ipynb")
+
+    for nb_path in notebooks:
+        if ".ipynb_checkpoints" in str(nb_path):
+            continue
+        print(str(nb_path))
+        print("-" * len(str(nb_path)))
+        nb = nbformat.read(str(nb_path), as_version=4.0)
+        kernelspec = nb.get("metadata", {}).get("kernelspec", None)
+        nb_ok = True
+        for config in PY36_KERNEL:
+            if not kernelspec:
+                print("no kernel information.")
+            if not kernelspec[config] in PY36_KERNEL[config]:
+                print("Incorrect value in", config, end=". ")
+                print(f"Should be: '{PY36_KERNEL[config]}'  Found:'{kernelspec[config]}'")
+                nb_ok = False
+        if nb_ok:
+            print(f"{kernelspec['name']} ok")
+        else:
+            print()
             
 def _add_script_args():
     parser = argparse.ArgumentParser(description="Notebook kernelspec checker.")
