@@ -1,7 +1,17 @@
 #!/bin/bash
 
-# Activate environment
-source /home/nbuser/anaconda3_501/bin/activate
+# Activate environment (add this to the end of .bashrc)
+source ~/anaconda3_501/bin/activate
+echo >> ~.bashrc
+echo source ~/anaconda3_501/bin/activate >> .bashrc
 
+echo Started environment setup
+date
+touch ~/.mpnb.lock
 # pip
-pip install -r /home/nbuser/library/requirements.txt
+pip install --upgrade pip
+pip install --disable-pip-version-check -r ~/library/requirements.txt
+
+rm -f ~/.mpnb.lock
+echo Environment setup complete
+date

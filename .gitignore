@@ -330,3 +330,5 @@ ASALocalRun/
 .mfractor/
 **/.ipynb_checkpoints/**
 **/Kqlmagic_temp_files/**
+**/.mypy_cache/**
+**/kqlmagic/**

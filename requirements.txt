@@ -1,3 +1,1 @@
-msticpy>=0.5.0
-Kqlmagic>=0.1.106
-pandas>=0.25
+msticpy>=0.6.0
