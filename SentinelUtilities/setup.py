@@ -6,27 +6,24 @@
 
 import setuptools
 
-INSTALL_REQUIRES = ['applicationinsights>=0.11.9', 
-                    'azure-loganalytics>=0.1.0', 
+INSTALL_REQUIRES = ['azure-loganalytics>=0.1.0', 
                     'azure-mgmt-loganalytics>=0.2.0',
-                    'azure-common>=1.1.25']
+                    'azure-common>=1.1.25',
+                    'azure-cli-core>=2.7.0'
+                    ]
 
-#with open("README.rst", "r") as f:
-#    long_description_text = f.read()
 with open("LICENSE.txt", "r") as fh:
     LICENSE_TXT = fh.read()
 
 setuptools.setup(
     name="Azure-Sentinel-Utilities",
-    version="0.5.15",
+    version="0.5.27",
     author="Azure Sentinel Notebooks Devs",
     author_email="zhzhao@microsoft.com",
     description="AZURE SENTINEL NOTEBOOKS PYTHON TOOLS: \
     This package is developed to support Azure Sentinel Notebooks.  \
     It is in an early preview stage so please provide feedback, \
     report bugs, and suggets for new features.",
-    #long_description='',
-    #long_description_content_type="text/x-rst",
     license=LICENSE_TXT,
     url="https://github.com/Azure/Azure-Sentinel",
     python_requires='>=3.6',
