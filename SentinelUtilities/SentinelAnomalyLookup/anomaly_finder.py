@@ -86,9 +86,9 @@ class AnomalyFinder():
         queries = ''
         for tbl in df_anomalies.Table.unique():
 
-            cur_table_anomalies = df_anomalies.ix[df_anomalies.Table == tbl, :]
+            cur_table_anomalies = df_anomalies.loc[df_anomalies.Table == tbl, :]
             query = """{tbl} \
-            | where TimeGenerated > datetime({maxTimestamp})-1d and TimeGenerated < datetime({maxTimestamp}) \
+            | where TimeGenerated > datetime({maxTimestamp})-14d and TimeGenerated < datetime({maxTimestamp}) \
             | where {entCol} has "{qEntity}" \
             | where """.format(**{
                 'tbl': tbl,
@@ -201,7 +201,6 @@ class AnomalyFinder():
         is_entity_in_table_template = AnomalyQueries.get_query('ISENTITYINTABLE')
 
         for tbl in tables:
-            print(tbl)
             kql_entity_in_table = is_entity_in_table_template.format(
                 table=tbl,
                 qDate=q_timestamp,
@@ -210,8 +209,8 @@ class AnomalyFinder():
 
             if ent_in_table.shape[0] > 0:
                 ent_col = [col for col in ent_in_table.select_dtypes('object').columns[1:] if
-                           ent_in_table.ix[0, col] is not None
-                           and ent_in_table.ix[:, col].str.contains(q_entity, case=False).all()]
+                           ent_in_table.loc[0, col] is not None
+                           and ent_in_table.loc[:, col].str.contains(q_entity, case=False).all()]
                 if ent_col:
                     ent_col = ent_col[0]
                 tables2search.append({'table': tbl, 'entCol': ent_col})
