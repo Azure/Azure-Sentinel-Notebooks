@@ -184,28 +184,19 @@ class WidgetViewHelper():
         """ Copy text to Clipboard """
         html_str = (
             """<!DOCTYPE html>
-            <html><body>
-            <input  id="sentinel_text_for_copy" type="text" readonly style="font-weight: bold; border: none; width:1px;" size = '"""
+            <html><body style="height:20px">
+            <input  id="sentinel_text_for_copy" type="text" readonly style="font-weight: bold; border: none; max-height:10px; width:1px;" size = '"""
             + str(len(text_body))
             + """' value='"""
             + text_body
             + """'>
-            <a target="_new" href="javascript:void(0);" onclick="sentinel_copy()">""" + label_text + """</a>
+            <button style="border: 2px solid #4CAF50;" onclick="sentinel_copy()">""" + label_text + """</button>
             <script>
-            var sentinel_win = null
             function sentinel_copy() {
                 var copyText = document.getElementById("sentinel_text_for_copy");
                 copyText.select();
                 document.execCommand("copy");
-
-                var w = screen.width - 300;
-                var h = screen.height - 300;
-                params = 'width='+w+',height='+h
-                sentinel_win = window.open('"""
-                        + url
-                        + """', 'sentinel_win', params);
             }
-
             </script>
             </body></html>"""
         )
@@ -219,7 +210,7 @@ class WidgetViewHelper():
                                              resource_group,
                                              workspace_name):
         """ Generate URL for LA logs """
-        return 'https://ms.portal.azure.com/#@{0}/resource/subscriptions/{1}/resourceGroups/{2}/providers/Microsoft.OperationalInsights/workspaces/{3}/logs'.format(tenant_domain, subscription_id, resource_group, workspace_name)
+        return 'https://portal.azure.com/#blade/Microsoft_Azure_Security_Insights/MainMenuBlade/7/subscriptionId/{0}/resourceGroup/{1}/workspaceName/{2}'.format(subscription_id, resource_group, workspace_name)
 
     @staticmethod
     # pylint: disable=undefined-variable
