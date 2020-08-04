@@ -11,6 +11,7 @@ This module has two classes: AnomalyQueries and AnomalyFinder
 import copy
 import datetime as dt
 import pandas as pd
+from pandas.io.json import json_normalize
 from azure.loganalytics.models import QueryBody
 
 from SentinelUtils.obfuscation_utility import ObfuscationUtility
@@ -69,8 +70,8 @@ class AnomalyFinder():
 
         res = self.la_data_client.query(self.workspace_id, QueryBody(query=query))
         json = res.as_dict()
-        cols = pd.json_normalize(json['tables'][0], 'columns')
-        data_frame = pd.json_normalize(json['tables'][0], 'rows')
+        cols = json_normalize(json['tables'][0], 'columns')
+        data_frame = json_normalize(json['tables'][0], 'rows')
         if data_frame.shape[0] != 0:
             data_frame.columns = cols.name
         return data_frame
