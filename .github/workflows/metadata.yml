@@ -1,0 +1,47 @@
+name: UpdateNotebooksMetadata
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ master ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  update:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v1
+    
+    - name: get changed file
+      id: files
+      uses: jitterbit/get-changed-files@v1
+      with:
+        format: 'json'
+      
+    - name: echo output 
+      id: filechecker
+      env:
+          GIT_TRACE: 1
+          GIT_CURL_VERBOSE: 1
+      run: |
+        readarray -t added_modified_files <<<"$(jq -r '.[]' <<<'${{ steps.files.outputs.added_modified }}')"
+        
+        echo ${{ steps.files.outputs.added_modified }}
+        for added_modified_file in "${added_modified_files[@]}"; do
+          echo "::set-output name=ipynbmodified::${added_modified_file}"
+        done
+    
+    - name: Send message to ms teams
+      env:
+          GIT_TRACE: 1
+          GIT_CURL_VERBOSE: 1
+      if: contains( steps.files.outputs.added_modified , '.ipynb')
+      uses: dhollerbach/github-action-send-message-to-ms-teams@1.0.10
+      with:
+        webhook: 'https://outlook.office.com/webhook/9d8ccfc6-77ef-43ba-842c-79e8843f06df@72f988bf-86f1-41af-91ab-2d7cd011db47/IncomingWebhook/3c472f90416748e3a0999996346ed059/e3fe78bd-01e7-4377-8dc9-c6bbd843384b'
+        message: ${{ steps.files.outputs.added_modified }}
