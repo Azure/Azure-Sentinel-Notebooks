@@ -1,5 +1,5 @@
  [
-	{
+    {
         "id": "AnomalyLookup",
         "lastRevisedDate": "2020-08-04"
     },
@@ -17,7 +17,7 @@
     },
     {
         "id": "AccountExplorer",
-        "lastRevisedDate": "2020-06-26"
+        "lastRevisedDate": "2020-09-03"
     },
     {
         "id": "DomainExplorer",
@@ -25,11 +25,11 @@
     },
     {
         "id": "IPExplorer",
-        "lastRevisedDate": "2020-06-26"
+        "lastRevisedDate": "2020-09-03"
     },
     {
         "id": "LinuxExplorer",
-        "lastRevisedDate": "2020-06-26"
+        "lastRevisedDate": "2020-09-03"
     },
     {
         "id": "Covid19",
@@ -49,6 +49,6 @@
     },
     {
         "id": "Exchange",
-        "lastRevisedDate": "2020-09-08"
+        "lastRevisedDate": "2020-09-09"
     }
 ]
