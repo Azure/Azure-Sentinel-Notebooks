@@ -48,11 +48,11 @@
         "lastRevisedDate": "2020-09-09"
     },
     {
-      "id": "Exchange",
-      "lastRevisedDate": "2020-09-09"
+        "id": "Exchange",
+        "lastRevisedDate": "2020-09-09"
     },
     {
-      "id": "PowerShell",
-      "lastRevisedDate": "2020-09-18"
+        "id": "PowerShell",
+        "lastRevisedDate": "2020-09-18"
     }
 ]
