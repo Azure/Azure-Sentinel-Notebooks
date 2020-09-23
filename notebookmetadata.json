@@ -13,11 +13,11 @@
     },
     {
         "id": "WindowsHostExplorer",
-        "lastRevisedDate": "2020-09-10"
+        "lastRevisedDate": "2020-09-11"
     },
     {
         "id": "AccountExplorer",
-        "lastRevisedDate": "2020-09-03"
+        "lastRevisedDate": "2020-09-08"
     },
     {
         "id": "DomainExplorer",
@@ -25,11 +25,11 @@
     },
     {
         "id": "IPExplorer",
-        "lastRevisedDate": "2020-09-03"
+        "lastRevisedDate": "2020-09-18"
     },
     {
         "id": "LinuxExplorer",
-        "lastRevisedDate": "2020-09-03"
+        "lastRevisedDate": "2020-09-08"
     },
     {
         "id": "Covid19",
@@ -45,10 +45,14 @@
     },
     {
         "id": "MDATP",
-        "lastRevisedDate": "2020-09-08"
+        "lastRevisedDate": "2020-09-09"
     },
     {
-        "id": "Exchange",
-        "lastRevisedDate": "2020-09-09"
+      "id": "Exchange",
+      "lastRevisedDate": "2020-09-09"
+    },
+    {
+      "id": "PowerShell",
+      "lastRevisedDate": "2020-09-18"
     }
 ]
