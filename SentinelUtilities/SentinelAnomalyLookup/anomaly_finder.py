@@ -25,7 +25,7 @@ class AnomalyQueries(): # pylint: disable=too-few-public-methods
     KEY = b'7jH91qslpgxNSdVPiQwtr2D4bSg2i5ArfJqAMA1zCkU='
     QUERIES = {}
     # pylint: disable=line-too-long
-    QUERIES['LISTTABLES'] = b'gAAAAABdNjjk1mX80_10papIcwNncViofTHxyN0UxY4LbKxYdIX-jBhGue8E2j7HOFUnkC_iQtR8q58OHpQzVVHdR264WDvRZxUULG6WaC5kLk-DXCpq7-JidKVvD2om3Foq0OYPxOuE0YNwoIMsXJnISmmP2eilXg=='
+    QUERIES['LISTTABLES'] = b'gAAAAABfdL95MQF9HV5YIbGGKy9kWPKXpbH3VWf80l9elru76D6sw8JN-shOQSYcWfSW43PfW7LSoShP14zl8_iu1-RC-mFYX_ZxiUBTZ5H-MHZZIAU0-nL1QOJ3EgJqHWpU79Kf9VsxjuKDf6oedEDnveb5MaM2Li-qQeJ7edUb1JknuQD5JFKRpqr_yE1jBQO3RPNxyXg9rhFPkNsTTxyHXZLE3NWQMA=='
     # pylint: disable=line-too-long
     QUERIES['ISCATCOLUMN'] = b'gAAAAABdNjkBT7XTAvPjCp56dI7LRL35EPMzF8UX_c4Hs0q910bTI2y-6viJGG7ZlXjclORrXFK68dAd2dYfLB0A_rw0Q9CeLEGUuWkHSFc7al2xwu7uEgliddsQQyocWhqyWlEtFEReIeJaqZYaSOkLon7sPN_icKEwiHc096kCkyjw5D0TeZ0Kgmnc5799Al7ND0kAk7KO'
     # pylint: disable=line-too-long
@@ -191,7 +191,7 @@ class AnomalyFinder():
         if not tables:
             kql_list_tables = AnomalyQueries.get_query('LISTTABLES')
             tables = self.query_loganalytics(kql_list_tables)
-            tables = tables.TableName.tolist()
+            tables = tables.SentinelTableName.tolist()
 
         progress_bar.value += 1
 
