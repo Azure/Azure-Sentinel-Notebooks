@@ -133,7 +133,7 @@ class WidgetViewHelper():
     def select_multiple_tables(anomaly_lookup):
         """ Select data tables """
         table_list = anomaly_lookup.query_table_list()
-        tables = sorted(table_list.TableName.tolist())
+        tables = sorted(table_list.SentinelTableName.tolist())
         return widgets.SelectMultiple(options=tables,
                                       row=len(tables),
                                       value=[],
