@@ -28,13 +28,9 @@ The notebooks are mostly one of three types:
   examples following a real or simulated hunt or investigation.
 
 
-## Clone this repo to Azure notebooks
-
-[![Clone to Azure Notebooks](https://notebooks.azure.com/launch.png)](https://notebooks.azure.com/import/gh/Azure/Azure-Sentinel-Notebooks)
-
 ## More Information
 
-- Read the [Get Started](https://nbviewer.jupyter.org/github/Azure/Azure-Sentinel-Notebooks/blob/master/Get%20Started.ipynb)
+- Read the [Get Started](https://nbviewer.jupyter.org/github/Azure/Azure-Sentinel-Notebooks/blob/master/A%20Getting%20Started%20Guide%20For%20Azure%20Sentinel%20ML%20Notebooks.ipynb)
   notebook.
 - Run a demonstration notebook in [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Azure/Azure-Sentinel-Notebooks/master?filepath=nbdemo%2Fmsticpy%20demo.ipynb)
 - Read more about the use of Jupter notebooks in Azure Sentinel on the 
