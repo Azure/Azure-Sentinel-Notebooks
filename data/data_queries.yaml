@@ -10,7 +10,7 @@ defaults:
   parameters:
 sources:
   get_network_summary:
-    description: Splunk network summary
+    description: Network summary for Timeseries
     metadata:
       data_families: [Network]
     args:
@@ -31,7 +31,7 @@ sources:
       query: processes_on_host.pkl
     parameters:
   OfficeActivity:
-    description: List logon failures on host
+    description: Office 365 activity
     metadata:
       data_families: [Azure]
     args:
