@@ -1,0 +1,39 @@
+metadata:
+  version: 1
+  description: Local Data Alert Queries
+  data_environments: [LocalData]
+  data_families: [SecurityAlert, WindowsSecurity, Network, Azure]
+  tags: ['alert', 'securityalert', 'process', 'account', 'network', 'logon']
+defaults:
+  metadata:
+    data_source: 'security_alert'
+  parameters:
+sources:
+  get_network_summary:
+    description: Splunk network summary
+    metadata:
+      data_families: [Network]
+    args:
+      query: timeseries.pkl
+    parameters:
+  list_host_logons:
+    description: List logons on host
+    metadata:
+      data_families: [WindowsSecurity]
+    args:
+      query: host_logons.pkl
+    parameters:
+  list_host_processes:
+    description: List processes on host
+    metadata:
+      data_families: [WindowsSecurity]
+    args:
+      query: processes_on_host.pkl
+    parameters:
+  OfficeActivity:
+    description: List logon failures on host
+    metadata:
+      data_families: [Azure]
+    args:
+      query: exchange_admin.pkl
+    parameters:
