@@ -1,58 +1,70 @@
- [
-    {
-        "id": "AnomalyLookup",
-        "lastRevisedDate": "2020-10-06"
-    },
-    {
-        "id": "Office365Exploring",
-        "lastRevisedDate": "2020-06-26"
-    },
-    {
-        "id": "ProcessAlert",
-        "lastRevisedDate": "2020-06-26"
-    },
-    {
-        "id": "WindowsHostExplorer",
-        "lastRevisedDate": "2020-09-11"
-    },
-    {
-        "id": "AccountExplorer",
-        "lastRevisedDate": "2020-09-08"
-    },
-    {
-        "id": "DomainExplorer",
-        "lastRevisedDate": "2020-06-26"
-    },
-    {
-        "id": "IPExplorer",
-        "lastRevisedDate": "2020-09-29"
-    },
-    {
-        "id": "LinuxExplorer",
-        "lastRevisedDate": "2020-09-22"
-    },
-    {
-        "id": "Covid19",
-        "lastRevisedDate": "2020-07-24"
-    },
-    {
-        "id": "AlertTriage",
-        "lastRevisedDate": "2020-09-03"
-    },
-    {
-        "id": "GettingStarted",
-        "lastRevisedDate": "2020-08-11"
-    },
-    {
-        "id": "MDATP",
-        "lastRevisedDate": "2020-09-09"
-    },
-    {
-        "id": "Exchange",
-        "lastRevisedDate": "2020-09-09"
-    },
-    {
-        "id": "PowerShell",
-        "lastRevisedDate": "2020-09-28"
-    },
+[
+  {
+    "id": "AnomalyLookup",
+    "lastRevisedDate": "2020-10-06"
+  },
+  {
+    "id": "Office365Exploring",
+    "lastRevisedDate": "2020-06-26"
+  },
+  {
+    "id": "ProcessAlert",
+    "lastRevisedDate": "2020-06-26"
+  },
+  {
+    "id": "WindowsHostExplorer",
+    "lastRevisedDate": "2020-09-11"
+  },
+  {
+    "id": "AccountExplorer",
+    "lastRevisedDate": "2020-09-08"
+  },
+  {
+    "id": "DomainExplorer",
+    "lastRevisedDate": "2020-06-26"
+  },
+  {
+    "id": "IPExplorer",
+    "lastRevisedDate": "2020-09-29"
+  },
+  {
+    "id": "LinuxExplorer",
+    "lastRevisedDate": "2020-09-22"
+  },
+  {
+    "id": "Covid19",
+    "lastRevisedDate": "2020-07-24"
+  },
+  {
+    "id": "AlertTriage",
+    "lastRevisedDate": "2020-09-03"
+  },
+  {
+    "id": "GettingStarted",
+    "lastRevisedDate": "2020-08-11"
+  },
+  {
+    "id": "MDATP",
+    "lastRevisedDate": "2020-09-09"
+  },
+  {
+    "id": "Exchange",
+    "lastRevisedDate": "2020-09-09"
+  },
+  {
+    "id": "PowerShell",
+    "lastRevisedDate": "2020-09-28"
+  },
+  {
+    "id": "MLExamples",
+    "lastRevisedDate": "2020-11-12"
+  },
+  {
+    "id": "HandsOnAPI",
+    "lastRevisedDate": "2020-12-04"
+  },
+  {
+    "id": "HandsOnSDK",
+    "lastRevisedDate": "2020-12-04"
+  }
 ]
