@@ -1,7 +1,7 @@
 [
   {
     "id": "AnomalyLookup",
-    "lastRevisedDate": "2020-10-06"
+    "lastRevisedDate": "2021-03-01"
   },
   {
     "id": "Office365Exploring",
@@ -65,10 +65,10 @@
   },
   {
     "id": "HandsOnAPI",
-    "lastRevisedDate": "2020-12-04"
+    "lastRevisedDate": "2021-03-01"
   },
   {
     "id": "HandsOnSDK",
-    "lastRevisedDate": "2020-12-04"
+    "lastRevisedDate": "2021-03-01"
   }
 ]
