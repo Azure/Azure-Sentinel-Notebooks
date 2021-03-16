@@ -1,7 +1,7 @@
 [
   {
     "id": "AnomalyLookup",
-    "lastRevisedDate": "2020-10-06"
+    "lastRevisedDate": "2021-03-01"
   },
   {
     "id": "Office365Exploring",
@@ -41,7 +41,7 @@
   },
   {
     "id": "GettingStarted",
-    "lastRevisedDate": "2020-08-11"
+    "lastRevisedDate": "2021-03-16"
   },
   {
     "id": "MDATP",
@@ -57,18 +57,18 @@
   },
   {
     "id": "MLExamples",
-    "lastRevisedDate": "2020-11-12"
+    "lastRevisedDate": "2021-03-04"
   },
   {
     "id": "Solarwinds",
-    "lastRevisedDate": "2021-01-11"
+    "lastRevisedDate": "2021-03-16"
   },
   {
     "id": "HandsOnAPI",
-    "lastRevisedDate": "2020-12-04"
+    "lastRevisedDate": "2021-03-01"
   },
   {
     "id": "HandsOnSDK",
-    "lastRevisedDate": "2020-12-04"
+    "lastRevisedDate": "2021-03-01"
   }
 ]
