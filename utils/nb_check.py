@@ -4,6 +4,7 @@
 # license information.
 # --------------------------------------------------------------------------
 """Checker for Python and msticpy versions."""
+import importlib
 import os
 import re
 import subprocess
@@ -34,6 +35,8 @@ def check_versions(
         Minimum Python version
     min_py_ver : Tuple[int, int]
         Minimum MSTICPy version
+    extras : Optional[List[str]]
+        A list of extras required for MSTICPy
 
     Raises
     ------
@@ -53,7 +56,7 @@ def check_versions(
             "--upgrade",
         ]
         if extras:
-            sp_args.append(f"msticpy[{', '.join(extras)}]")
+            sp_args.append(f"msticpy[{','.join(extras)}]")
         else:
             sp_args.append("msticpy")
         subprocess.run(
@@ -62,11 +65,15 @@ def check_versions(
             stdout=sys.stdout,
             stderr=sys.stderr,
         )
+        # pylint: disable=unused-import, import-outside-toplevel
         if "msticpy" in sys.modules:
             importlib.reload(sys.modules["msticpy"])
         else:
             import msticpy
-        check_mp_ver(REQ_MSTICPY_VER)
+        # pylint: enable=unused-import, import-outside-toplevel
+        check_mp_ver(min_mp_ver)
+
+    _set_kql_env_vars(extras)
 
 
 def check_python_ver(min_py_ver=MIN_PYTHON_VER_DEF):
@@ -112,12 +119,10 @@ def check_python_ver(min_py_ver=MIN_PYTHON_VER_DEF):
 
     display(
         HTML(
-            "Python kernel version %s.%s.%s OK"
+            "Python kernel version %s.%s.%s OK<br>"
             % (sys.version_info[0], sys.version_info[1], sys.version_info[2])
         )
     )
-
-    os.environ["KQLMAGIC_EXTRAS_REQUIRES"] = "jupyter-extended"
 
 
 # pylint: disable=import-outside-toplevel
@@ -180,11 +185,21 @@ def check_mp_ver(min_msticpy_ver=MSTICPY_REQ_VERSION):
         )
         raise RuntimeError(wrong_ver_err)
 
-    display(HTML("msticpy version %s.%s.%s OK" % mp_version))
+    display(HTML("msticpy version %s.%s.%s OK<br>" % mp_version))
+
+
+def _set_kql_env_vars(extras):
+    jp_extended = ("azsentinel", "azuresentinel", "kql")
+    # If running in
+    if extras and any(extra for extra in extras if extra in jp_extended):
+        os.environ["KQLMAGIC_EXTRAS_REQUIRES"] = "jupyter-extended"
+    else:
+        os.environ["KQLMAGIC_EXTRAS_REQUIRES"] = "jupyter-basic"
 
 
 def _fmt_ver(version):
     return ".".join(str(ver) for ver in version)
+
 
 def _get_version(module):
     ver_match = re.match(VER_RGX, module.__version__)

@@ -1,1 +1,1 @@
-msticpy>=0.6.0
+msticpy>=1.0.0
