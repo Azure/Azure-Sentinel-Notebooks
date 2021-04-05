@@ -9,12 +9,13 @@ import os
 import re
 import subprocess
 import sys
+from pkg_resources import parse_version
 from IPython.display import display, HTML
 
 
 MISSING_PKG_ERR = """
     <h3><font color='orange'>The package '<b>{package}</b>' is not
-    installed or has an unsupported version {inst_ver}</font></h3>
+    installed or has an unsupported version (installed version = '{inst_ver}')</font></h3>
     <h4>Please install or upgrade this now</h4>
     Required version is {package}>={req_ver}
     """
@@ -24,19 +25,22 @@ VER_RGX = r"(?P<maj>\d+)\.(?P<min>\d+).(?P<pnt>\d+)(?P<suff>.*)"
 
 
 def check_versions(
-    min_py_ver=MIN_PYTHON_VER_DEF, min_mp_ver=MSTICPY_REQ_VERSION, extras=None
+    min_py_ver=MIN_PYTHON_VER_DEF, min_mp_ver=MSTICPY_REQ_VERSION, extras=None, mp_release=None
 ):
     """
     Check the current versions of the Python kernel and MSTICPy.
 
     Parameters
     ----------
-    min_py_ver : Tuple[int, int]
+    min_py_ver : Union[Tuple[int, int], str]
         Minimum Python version
-    min_py_ver : Tuple[int, int]
+    min_mp_ver : Union[Tuple[int, int], str]
         Minimum MSTICPy version
     extras : Optional[List[str]]
         A list of extras required for MSTICPy
+    mp_release : Optional[str]
+        Override the MSTICPy release version. This
+        can also be specified in the environment variable 'MP_TEST_VER'
 
     Raises
     ------
@@ -46,19 +50,25 @@ def check_versions(
         and the user chose not to upgrade
 
     """
+    if isinstance(min_py_ver, str):
+        min_py_ver = _get_pkg_version(min_py_ver).release
     check_python_ver(min_py_ver=min_py_ver)
+
+    # Use the release ver specified in params, in the environment or
+    # the notebook default.
+    pkg_version = _get_pkg_version(min_mp_ver)
+    mp_install_version = mp_release or os.environ.get("MP_TEST_VER", str(pkg_version))
     try:
-        check_mp_ver(min_msticpy_ver=min_mp_ver)
+        check_mp_ver(min_msticpy_ver=mp_install_version)
     except ImportError:
         sp_args = [
             "pip",
             "install",
             "--upgrade",
         ]
-        if extras:
-            sp_args.append(f"msticpy[{','.join(extras)}]")
-        else:
-            sp_args.append("msticpy")
+        mp_pkg_spec = f"msticpy[{','.join(extras)}]" if extras else "msticpy"
+        mp_pkg_spec = f"{mp_pkg_spec}>={mp_install_version}"
+        sp_args.append(mp_pkg_spec)
         subprocess.run(
             sp_args,
             check=True,
@@ -72,6 +82,8 @@ def check_versions(
             import msticpy
         # pylint: enable=unused-import, import-outside-toplevel
         check_mp_ver(min_mp_ver)
+    except RuntimeError:
+        print("Installation aborted.")
 
     _set_kql_env_vars(extras)
 
@@ -145,15 +157,16 @@ def check_mp_ver(min_msticpy_ver=MSTICPY_REQ_VERSION):
         If MSTICPy version is insufficient and we need to upgrade
 
     """
+    mp_min_pkg_ver = _get_pkg_version(min_msticpy_ver)
+
     display(HTML("Checking msticpy version..."))
-    wrong_ver_err = "msticpy %s.%s.%s or later is needed." % min_msticpy_ver
-    curr_ver_text = "none"
+    wrong_ver_err = "msticpy {mp_pkg_ver} or later is needed."
+    inst_version = "none"
     try:
         import msticpy
 
-        curr_ver_text = msticpy.__version__
-        mp_version = _get_version(msticpy)
-        if mp_version < min_msticpy_ver:
+        inst_version = _get_pkg_version(msticpy.__version__)
+        if inst_version < mp_min_pkg_ver:
             raise ImportError(wrong_ver_err)
 
     except ImportError:
@@ -161,12 +174,12 @@ def check_mp_ver(min_msticpy_ver=MSTICPY_REQ_VERSION):
             HTML(
                 MISSING_PKG_ERR.format(
                     package="msticpy",
-                    inst_ver=curr_ver_text,
-                    req_ver=_fmt_ver(min_msticpy_ver),
+                    inst_ver=inst_version,
+                    req_ver=mp_min_pkg_ver,
                 )
             )
         )
-        resp = input("Install? (y/n)")  # nosec
+        resp = input("Install now? (y/n)")  # nosec
         if resp.casefold().startswith("y"):
             raise
 
@@ -180,7 +193,7 @@ def check_mp_ver(min_msticpy_ver=MSTICPY_REQ_VERSION):
             Please see the <b><a href="./TroubleShootingNotebooks.ipynb">
             TroubleShootingNotebooks</a></b>
             in this folder for more information<br><br><hr>
-            """.format(pkg="msticpy", ver=_fmt_ver(min_msticpy_ver), curr_ver=curr_ver_text)
+            """.format(pkg="msticpy", ver=mp_min_pkg_ver, curr_ver=inst_version)
             )
         )
         raise RuntimeError(wrong_ver_err)
@@ -201,9 +214,12 @@ def _fmt_ver(version):
     return ".".join(str(ver) for ver in version)
 
 
-def _get_version(module):
-    ver_match = re.match(VER_RGX, module.__version__)
-    if ver_match:
-        ver_dict = ver_match.groupdict()
-        return int(ver_dict["maj"]), int(ver_dict["min"]), int(ver_dict["pnt"])
-    return (0, 0, 0)
+def _fmt_dict_ver(version):
+    return ".".join(str(ver) for ver in version.values)
+
+
+def _get_pkg_version(version):
+    if isinstance(version, str):
+        return parse_version(version)
+    elif isinstance(version, tuple):
+        return parse_version(".".join(str(ver) for ver in version))
