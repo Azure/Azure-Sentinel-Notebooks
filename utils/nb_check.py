@@ -6,26 +6,43 @@
 """Checker for Python and msticpy versions."""
 import importlib
 import os
-import re
-import subprocess
 import sys
+
+from IPython import get_ipython
+from IPython.display import HTML, display
 from pkg_resources import parse_version
-from IPython.display import display, HTML
 
 
+AZ_GET_STARTED = (
+    "https://github.com/Azure/Azure-Sentinel-Notebooks/blob/master/A%20Getting"
+    "%20Started%20Guide%20For%20Azure%20Sentinel%20ML%20Notebooks.ipynb"
+)
+TROUBLE_SHOOTING = (
+    "https://github.com/Azure/Azure-Sentinel-Notebooks/blob/master/"
+    "TroubleShootingNotebooks.ipynb"
+)
 MISSING_PKG_ERR = """
-    <h3><font color='orange'>The package '<b>{package}</b>' is not
-    installed or has an unsupported version (installed version = '{inst_ver}')</font></h3>
-    <h4>Please install or upgrade this now</h4>
-    Required version is {package}>={req_ver}
+    <h4><font color='orange'>The package '<b>{package}</b>' is not
+    installed or has an unsupported version (installed version = '{inst_ver}')</font></h4>
+    Please install or upgrade before continuing: required version is {package}>={req_ver}
     """
+MP_INSTALL_FAILED = """
+    <h4><font color='red'>The notebook cannot be run without
+    the correct version of '<b>{pkg}</b>' ({ver} or later).</font></h4>
+    Please see the <a href="{nbk_uri}">
+    Getting Started Guide For Azure Sentinel ML Notebooks</a></b>
+    for more information<br><hr>
+"""
 MIN_PYTHON_VER_DEF = (3, 6)
 MSTICPY_REQ_VERSION = (0, 9, 0)
 VER_RGX = r"(?P<maj>\d+)\.(?P<min>\d+).(?P<pnt>\d+)(?P<suff>.*)"
 
 
 def check_versions(
-    min_py_ver=MIN_PYTHON_VER_DEF, min_mp_ver=MSTICPY_REQ_VERSION, extras=None, mp_release=None
+    min_py_ver=MIN_PYTHON_VER_DEF,
+    min_mp_ver=MSTICPY_REQ_VERSION,
+    extras=None,
+    mp_release=None,
 ):
     """
     Check the current versions of the Python kernel and MSTICPy.
@@ -50,6 +67,8 @@ def check_versions(
         and the user chose not to upgrade
 
     """
+    print("Note: you may need to scroll down this cell to see the full output.")
+
     if isinstance(min_py_ver, str):
         min_py_ver = _get_pkg_version(min_py_ver).release
     check_python_ver(min_py_ver=min_py_ver)
@@ -58,22 +77,26 @@ def check_versions(
     # the notebook default.
     pkg_version = _get_pkg_version(min_mp_ver)
     mp_install_version = mp_release or os.environ.get("MP_TEST_VER", str(pkg_version))
+    exact_version = bool(mp_release or os.environ.get("MP_TEST_VER"))
+
     try:
         check_mp_ver(min_msticpy_ver=mp_install_version)
+        if extras:
+            # If any extras are specified, always trigger an install
+            _disp_html("Running install to ensure extras are installed...<br>")
+            _install_mp(
+                mp_install_version=mp_install_version,
+                exact_version=exact_version,
+                extras=extras,
+            )
     except ImportError:
-        sp_args = [
-            "pip",
-            "install",
-            "--upgrade",
-        ]
-        mp_pkg_spec = f"msticpy[{','.join(extras)}]" if extras else "msticpy"
-        mp_pkg_spec = f"{mp_pkg_spec}>={mp_install_version}"
-        sp_args.append(mp_pkg_spec)
-        subprocess.run(
-            sp_args,
-            check=True,
-            stdout=sys.stdout,
-            stderr=sys.stderr,
+        _install_mp(
+            mp_install_version=mp_install_version,
+            exact_version=exact_version,
+            extras=extras,
+        )
+        _disp_html(
+            "Installation completed. Attempting to re-import/reload MSTICPy..."
         )
         # pylint: disable=unused-import, import-outside-toplevel
         if "msticpy" in sys.modules:
@@ -81,9 +104,9 @@ def check_versions(
         else:
             import msticpy
         # pylint: enable=unused-import, import-outside-toplevel
-        check_mp_ver(min_mp_ver)
+        check_mp_ver(min_msticpy_ver=mp_install_version)
     except RuntimeError:
-        print("Installation aborted.")
+        _disp_html("Installation aborted.")
 
     _set_kql_env_vars(extras)
 
@@ -103,37 +126,32 @@ def check_python_ver(min_py_ver=MIN_PYTHON_VER_DEF):
         If the Python version does not support the notebook.
 
     """
-    display(HTML("Checking Python kernel version..."))
+    _disp_html("Checking Python kernel version...")
     if sys.version_info < min_py_ver:
-        display(
-            HTML(
-                """
-            <h3><font color='red'>This notebook requires a later notebook
-            (Python) kernel version.</h3></font>
-            From the Notebook menu (above), choose <b>Kernel</b> then
-            <b>Change Kernel...</b> from the menu.<br>
-            Select a <b>Python %s.%s</b> (or later) version kernel and then re-run
-            this cell.<br><br>
+        _disp_html(
             """
-                % min_py_ver
-            )
+            <h4><font color='red'>This notebook requires a later notebook
+            (Python) kernel version.</h4></font>
+            Select a kernel from the notebook toolbar (above), that is Python
+            3.6 or later (Python 3.8 recommended)<br>
+            """
+            % min_py_ver
         )
-        display(
-            HTML(
-                """
-            Please see the <b><a href="./TroubleShootingNotebooks.ipynb">
-            TroubleShootingNotebooks</a></b>
-            in this folder for more information<br><br><hr>
+        _disp_html(
+            f"""
+            Please see the <a href="{TROUBLE_SHOOTING}">TroubleShootingNotebooks</a>
+            for more information<br><br><hr>
             """
-            )
         )
         raise RuntimeError("Python %s.%s or later kernel is required." % min_py_ver)
 
-    display(
-        HTML(
-            "Python kernel version %s.%s.%s OK<br>"
-            % (sys.version_info[0], sys.version_info[1], sys.version_info[2])
+    if sys.version_info < (3, 8, 0):
+        display(
+            "Recommended: switch to using the 'Python 3.8 -AzureML' notebook kernel."
         )
+    _disp_html(
+        "Info: Python kernel version %s.%s.%s OK<br>"
+        % (sys.version_info[0], sys.version_info[1], sys.version_info[2])
     )
 
 
@@ -159,8 +177,8 @@ def check_mp_ver(min_msticpy_ver=MSTICPY_REQ_VERSION):
     """
     mp_min_pkg_ver = _get_pkg_version(min_msticpy_ver)
 
-    display(HTML("Checking msticpy version..."))
-    wrong_ver_err = "msticpy {mp_pkg_ver} or later is needed."
+    _disp_html("Checking msticpy version...<br>")
+    wrong_ver_err = f"msticpy {mp_min_pkg_ver} or later is needed."
     inst_version = "none"
     try:
         import msticpy
@@ -170,35 +188,44 @@ def check_mp_ver(min_msticpy_ver=MSTICPY_REQ_VERSION):
             raise ImportError(wrong_ver_err)
 
     except ImportError:
-        display(
-            HTML(
-                MISSING_PKG_ERR.format(
-                    package="msticpy",
-                    inst_ver=inst_version,
-                    req_ver=mp_min_pkg_ver,
-                )
+        _disp_html(
+            MISSING_PKG_ERR.format(
+                package="msticpy",
+                inst_ver=inst_version,
+                req_ver=mp_min_pkg_ver,
             )
         )
         resp = input("Install now? (y/n)")  # nosec
         if resp.casefold().startswith("y"):
             raise
 
-        display(
-            HTML(
-                """
-            <h3><font color='red'>The notebook cannot be run without
-            the correct version of '<b>{pkg}</b>' ({ver} or later).
-            </font></h3>
-            Currently installed version is {curr_ver}
-            Please see the <b><a href="./TroubleShootingNotebooks.ipynb">
-            TroubleShootingNotebooks</a></b>
-            in this folder for more information<br><br><hr>
-            """.format(pkg="msticpy", ver=mp_min_pkg_ver, curr_ver=inst_version)
+        _disp_html(
+            MP_INSTALL_FAILED.format(
+                pkg="msticpy",
+                ver=mp_min_pkg_ver,
+                curr_ver=inst_version,
+                nbk_uri=AZ_GET_STARTED,
             )
         )
         raise RuntimeError(wrong_ver_err)
 
-    display(HTML("msticpy version %s.%s.%s OK<br>" % mp_version))
+    _disp_html(f"Info: msticpy version {mp_min_pkg_ver} OK<br>")
+
+
+def _install_mp(mp_install_version, exact_version, extras):
+    """Try to install MSTICPY."""
+    sp_args = ["install"]
+    pkg_op = "==" if exact_version else ">="
+    mp_pkg_spec = f"msticpy[{','.join(extras)}]" if extras else "msticpy"
+    mp_pkg_spec = f"{mp_pkg_spec}{pkg_op}{mp_install_version}"
+    sp_args.append(mp_pkg_spec)
+
+    display(
+        HTML(f"<br>Running pip {' '.join(sp_args)} - this may take a few moments...<br>")
+    )
+
+    ip_shell = get_ipython()
+    ip_shell.run_line_magic("pip", " ".join(sp_args))
 
 
 def _set_kql_env_vars(extras):
@@ -210,16 +237,13 @@ def _set_kql_env_vars(extras):
         os.environ["KQLMAGIC_EXTRAS_REQUIRES"] = "jupyter-basic"
 
 
-def _fmt_ver(version):
-    return ".".join(str(ver) for ver in version)
-
-
-def _fmt_dict_ver(version):
-    return ".".join(str(ver) for ver in version.values)
-
-
 def _get_pkg_version(version):
     if isinstance(version, str):
         return parse_version(version)
     elif isinstance(version, tuple):
         return parse_version(".".join(str(ver) for ver in version))
+    raise TypeError(f"Unparseable type version {version}")
+
+
+def _disp_html(text):
+    display(HTML(text))

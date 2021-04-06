@@ -223,24 +223,26 @@ def _add_script_args():
     parser.add_argument(
         "cmd",
         choices=["install", "reset", "test", "makedist", "showdist", "baseline"],
-        help="\n".join([
-            "Run command: [install | reset | test | makedist | showdist | baseline]",
-            (
-                "install - install msticpy from a dist folder (--path) with option extras"
-                " (specified as a string with the --extras argument."
-            ),
-            (
-                "reset - uninstall all packages apart from the baseline"
-                " (baseline package file is specified with --base-packages argument)."
-            ),
-            "test - run pytest tests against current install.",
-            "makedist - create a setuptools distribution from --path",
-            "showdist - list the distributions in the 'dist' folder in --path",
-            (
-                "baseline - create a baseline requirements file from current packages"
-                " (specify output file as --output, default is baseline_pkg.txt"
-            ),
-        ])
+        help="\n".join(
+            [
+                "Run command: [install | reset | test | makedist | showdist | baseline]",
+                (
+                    "install - install msticpy from a dist folder (--path) with option extras"
+                    " (specified as a string with the --extras argument."
+                ),
+                (
+                    "reset - uninstall all packages apart from the baseline"
+                    " (baseline package file is specified with --base-packages argument)."
+                ),
+                "test - run pytest tests against current install.",
+                "makedist - create a setuptools distribution from --path",
+                "showdist - list the distributions in the 'dist' folder in --path",
+                (
+                    "baseline - create a baseline requirements file from current packages"
+                    " (specify output file as --output, default is baseline_pkg.txt"
+                ),
+            ]
+        ),
     )
     parser.add_argument(
         "--extra",
