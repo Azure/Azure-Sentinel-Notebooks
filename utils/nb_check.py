@@ -27,12 +27,18 @@ MISSING_PKG_ERR = """
     Please install or upgrade before continuing: required version is {package}>={req_ver}
     """
 MP_INSTALL_FAILED = """
-    <h4><font color='red'>The notebook cannot be run without
+    <h4><font color='red'>The notebook may not run correctly without
     the correct version of '<b>{pkg}</b>' ({ver} or later).</font></h4>
     Please see the <a href="{nbk_uri}">
     Getting Started Guide For Azure Sentinel ML Notebooks</a></b>
     for more information<br><hr>
 """
+RELOAD_MP = """
+    <h4><font color='orange'>Kernel restart needed</h4>
+    An error was detected trying to load the updated version of MSTICPy.<br>
+    Please restart the notebook kernel and re-run this cell - it should
+    run without error.
+    """
 MIN_PYTHON_VER_DEF = (3, 6)
 MSTICPY_REQ_VERSION = (0, 9, 0)
 VER_RGX = r"(?P<maj>\d+)\.(?P<min>\d+).(?P<pnt>\d+)(?P<suff>.*)"
@@ -43,6 +49,7 @@ def check_versions(
     min_mp_ver=MSTICPY_REQ_VERSION,
     extras=None,
     mp_release=None,
+    pip_quiet=True
 ):
     """
     Check the current versions of the Python kernel and MSTICPy.
@@ -53,11 +60,14 @@ def check_versions(
         Minimum Python version
     min_mp_ver : Union[Tuple[int, int], str]
         Minimum MSTICPy version
-    extras : Optional[List[str]]
+    extras : Optional[List[str]], optional
         A list of extras required for MSTICPy
-    mp_release : Optional[str]
+    mp_release : Optional[str], optional
         Override the MSTICPy release version. This
         can also be specified in the environment variable 'MP_TEST_VER'
+    pip_quiet : bool, optional
+        If True (default) will suppress all output from pip except
+        warnings and errors. False will display normal output.
 
     Raises
     ------
@@ -67,8 +77,8 @@ def check_versions(
         and the user chose not to upgrade
 
     """
-    print("Note: you may need to scroll down this cell to see the full output.")
-
+    _disp_html("Note: you may need to scroll down this cell to see the full output.")
+    _disp_html("<h4>Starting notebook pre-checks...</h4>")
     if isinstance(min_py_ver, str):
         min_py_ver = _get_pkg_version(min_py_ver).release
     check_python_ver(min_py_ver=min_py_ver)
@@ -88,27 +98,33 @@ def check_versions(
                 mp_install_version=mp_install_version,
                 exact_version=exact_version,
                 extras=extras,
+                quiet=pip_quiet,
             )
     except ImportError:
         _install_mp(
             mp_install_version=mp_install_version,
             exact_version=exact_version,
             extras=extras,
+            quiet=pip_quiet,
         )
         _disp_html(
             "Installation completed. Attempting to re-import/reload MSTICPy..."
         )
         # pylint: disable=unused-import, import-outside-toplevel
         if "msticpy" in sys.modules:
-            importlib.reload(sys.modules["msticpy"])
+            try:
+                importlib.reload(sys.modules["msticpy"])
+            except ImportError:
+                _disp_html(RELOAD_MP)
         else:
             import msticpy
         # pylint: enable=unused-import, import-outside-toplevel
         check_mp_ver(min_msticpy_ver=mp_install_version)
     except RuntimeError:
-        _disp_html("Installation aborted.")
+        _disp_html("Installation skipped.")
 
     _set_kql_env_vars(extras)
+    _disp_html("<h4>Notebook pre-checks complete.</h4>")
 
 
 def check_python_ver(min_py_ver=MIN_PYTHON_VER_DEF):
@@ -146,8 +162,9 @@ def check_python_ver(min_py_ver=MIN_PYTHON_VER_DEF):
         raise RuntimeError("Python %s.%s or later kernel is required." % min_py_ver)
 
     if sys.version_info < (3, 8, 0):
-        display(
-            "Recommended: switch to using the 'Python 3.8 -AzureML' notebook kernel."
+        _disp_html(
+            "Recommended: switch to using the 'Python 3.8 - AzureML' notebook kernel"
+            " if this is available."
         )
     _disp_html(
         "Info: Python kernel version %s.%s.%s OK<br>"
@@ -212,9 +229,11 @@ def check_mp_ver(min_msticpy_ver=MSTICPY_REQ_VERSION):
     _disp_html(f"Info: msticpy version {mp_min_pkg_ver} OK<br>")
 
 
-def _install_mp(mp_install_version, exact_version, extras):
+def _install_mp(mp_install_version, exact_version, extras, quiet=True):
     """Try to install MSTICPY."""
-    sp_args = ["install"]
+    sp_args = ["install", "--no-input"]
+    if quiet:
+        sp_args.append("--quiet")
     pkg_op = "==" if exact_version else ">="
     mp_pkg_spec = f"msticpy[{','.join(extras)}]" if extras else "msticpy"
     mp_pkg_spec = f"{mp_pkg_spec}{pkg_op}{mp_install_version}"
