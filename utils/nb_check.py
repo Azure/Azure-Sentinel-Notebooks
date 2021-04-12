@@ -5,13 +5,16 @@
 # --------------------------------------------------------------------------
 """Checker for Python and msticpy versions."""
 import importlib
+import json
 import os
+import socket
 import sys
+import urllib
+from pathlib import Path
 
 from IPython import get_ipython
 from IPython.display import HTML, display
 from pkg_resources import parse_version
-
 
 AZ_GET_STARTED = (
     "https://github.com/Azure/Azure-Sentinel-Notebooks/blob/master/A%20Getting"
@@ -39,6 +42,7 @@ RELOAD_MP = """
     Please restart the notebook kernel and re-run this cell - it should
     run without error.
     """
+
 MIN_PYTHON_VER_DEF = (3, 6)
 MSTICPY_REQ_VERSION = (0, 9, 0)
 VER_RGX = r"(?P<maj>\d+)\.(?P<min>\d+).(?P<pnt>\d+)(?P<suff>.*)"
@@ -49,7 +53,7 @@ def check_versions(
     min_mp_ver=MSTICPY_REQ_VERSION,
     extras=None,
     mp_release=None,
-    pip_quiet=True
+    pip_quiet=True,
 ):
     """
     Check the current versions of the Python kernel and MSTICPy.
@@ -107,9 +111,7 @@ def check_versions(
             extras=extras,
             quiet=pip_quiet,
         )
-        _disp_html(
-            "Installation completed. Attempting to re-import/reload MSTICPy..."
-        )
+        _disp_html("Installation completed. Attempting to re-import/reload MSTICPy...")
         # pylint: disable=unused-import, import-outside-toplevel
         if "msticpy" in sys.modules:
             try:
@@ -123,7 +125,9 @@ def check_versions(
     except RuntimeError:
         _disp_html("Installation skipped.")
 
+    _check_kql_prereqs()
     _set_kql_env_vars(extras)
+    _run_user_settings()
     _disp_html("<h4>Notebook pre-checks complete.</h4>")
 
 
@@ -240,7 +244,9 @@ def _install_mp(mp_install_version, exact_version, extras, quiet=True):
     sp_args.append(mp_pkg_spec)
 
     display(
-        HTML(f"<br>Running pip {' '.join(sp_args)} - this may take a few moments...<br>")
+        HTML(
+            f"<br>Running pip {' '.join(sp_args)} - this may take a few moments...<br>"
+        )
     )
 
     ip_shell = get_ipython()
@@ -254,6 +260,7 @@ def _set_kql_env_vars(extras):
         os.environ["KQLMAGIC_EXTRAS_REQUIRES"] = "jupyter-extended"
     else:
         os.environ["KQLMAGIC_EXTRAS_REQUIRES"] = "jupyter-basic"
+    os.environ["KQLMAGIC_AZUREML_COMPUTE"] = _get_vm_fqdn()
 
 
 def _get_pkg_version(version):
@@ -266,3 +273,111 @@ def _get_pkg_version(version):
 
 def _disp_html(text):
     display(HTML(text))
+
+
+def get_aml_user_folder():
+    """Return the root of the user folder."""
+    user_path = Path("/")
+    path_parts = Path(".").absolute().parts
+    for idx, part in enumerate(path_parts):
+        if part.casefold() == "users":
+            user_path = user_path.joinpath(part).joinpath(path_parts[idx + 1])
+            break
+        user_path = user_path.joinpath(part)
+    return user_path
+
+
+def _run_user_settings():
+    user_folder = get_aml_user_folder()
+    if user_folder.joinpath("nbuser_settings.py").is_file():
+        sys.path.append(str(user_folder))
+        import nbuser_settings
+
+
+def _get_vm_metadata():
+    """Use local request to get VM metadata."""
+    vm_uri = "http://169.254.169.254/metadata/instance?api-version=2017-08-01"
+    req = urllib.request.Request(vm_uri)
+    req.add_header("Metadata", "true")
+    resp = urllib.request.urlopen(req)
+
+    with urllib.request.urlopen(req) as resp:
+        return json.loads(resp.read())
+
+
+def _get_vm_fqdn():
+    """Get the FQDN of the host."""
+    return ".".join(
+        [
+            socket.gethostname(),
+            _get_vm_metadata().get("compute", {}).get("location"),
+            "instances.azureml.ms",
+        ]
+    )
+
+
+def _check_kql_prereqs():
+    """
+    Check and install packages for Kqlmagic/msal_extensions.
+
+    Notes
+    -----
+    Kqlmagic may trigger warnings about a missing PyGObject package
+    and some system library dependencies. To fix this do the
+    following:<br>
+    From a notebook run:
+
+        %pip uninstall enum34
+        !sudo apt install libgirepository1.0-dev
+        !sudo apt install gir1.2-secret-1
+        %pip install pygobject
+
+    You can also do this from a terminal - but ensure that you've
+    activated the environment corresponding to the kernel you are
+    using prior to running the pip commands.
+
+        # Install the libgi dependency
+        sudo apt install libgirepository1.0-dev
+        sudo apt install gir1.2-secret-1
+
+        # activate the environment
+        # conda activate azureml_py38
+        # source ./env_path/scripts/activate
+
+        # Uninstall enum34
+        python -m pip uninstall enum34
+        # Install pygobject
+        python -m install pygobject
+    """
+
+    try:
+        # If this successfully imports, we are ok
+        import gi
+
+        del gi
+    except ImportError:
+        try:
+            # Check for system packages
+            ip_shell = get_ipython()
+            apt_list = ip_shell.run_line_magic("sx", "apt list")
+            apt_list = [apt.split("/", maxsplit=1)[0] for apt in apt_list]
+            for apt_pkg in ("libgirepository1.0-dev", "gir1.2-secret-1"):
+                if apt_pkg not in apt_list:
+                    _disp_html(
+                        f"Kqlmagic pre-req '{apt_pkg}' not installed. Installing..."
+                    )
+                    ip_shell.run_line_magic("sc", f"sudo apt install {apt_pkg}")
+
+            # If this successfully imports, we want to remove it since
+            # a) it breaks the PyGObject setup
+            # b) it shouldn't be installed in > Py34 anyway
+            import enum34
+
+            _disp_html("Conflicting package 'enum34' found. Uninstalling...")
+            ip_shell.run_line_magic("pip", "uninstall -y enum34")
+            del enum34
+        except ImportError:
+            pass
+
+        _disp_html("Kqlmagic python pre-req 'PyGObject' not installed. Installing...")
+        ip_shell.run_line_magic("pip", "install PyGObject")
