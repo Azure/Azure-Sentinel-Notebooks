@@ -46,6 +46,8 @@ RELOAD_MP = """
 MIN_PYTHON_VER_DEF = (3, 6)
 MSTICPY_REQ_VERSION = (0, 9, 0)
 VER_RGX = r"(?P<maj>\d+)\.(?P<min>\d+).(?P<pnt>\d+)(?P<suff>.*)"
+MP_ENV_VAR = "MSTICPYCONFIG"
+MP_FILE = "msticpyconfig.yaml"
 
 
 def check_versions(
@@ -87,47 +89,12 @@ def check_versions(
         min_py_ver = _get_pkg_version(min_py_ver).release
     check_python_ver(min_py_ver=min_py_ver)
 
-    # Use the release ver specified in params, in the environment or
-    # the notebook default.
-    pkg_version = _get_pkg_version(min_mp_ver)
-    mp_install_version = mp_release or os.environ.get("MP_TEST_VER", str(pkg_version))
-    exact_version = bool(mp_release or os.environ.get("MP_TEST_VER"))
-
-    try:
-        check_mp_ver(min_msticpy_ver=mp_install_version)
-        if extras:
-            # If any extras are specified, always trigger an install
-            _disp_html("Running install to ensure extras are installed...<br>")
-            _install_mp(
-                mp_install_version=mp_install_version,
-                exact_version=exact_version,
-                extras=extras,
-                quiet=pip_quiet,
-            )
-    except ImportError:
-        _install_mp(
-            mp_install_version=mp_install_version,
-            exact_version=exact_version,
-            extras=extras,
-            quiet=pip_quiet,
-        )
-        _disp_html("Installation completed. Attempting to re-import/reload MSTICPy...")
-        # pylint: disable=unused-import, import-outside-toplevel
-        if "msticpy" in sys.modules:
-            try:
-                importlib.reload(sys.modules["msticpy"])
-            except ImportError:
-                _disp_html(RELOAD_MP)
-        else:
-            import msticpy
-        # pylint: enable=unused-import, import-outside-toplevel
-        check_mp_ver(min_msticpy_ver=mp_install_version)
-    except RuntimeError:
-        _disp_html("Installation skipped.")
+    _check_mp_install(min_mp_ver, mp_release, extras, pip_quiet)
 
     _check_kql_prereqs()
     _set_kql_env_vars(extras)
     _run_user_settings()
+    _set_mpconfig_var()
     _disp_html("<h4>Notebook pre-checks complete.</h4>")
 
 
@@ -174,6 +141,47 @@ def check_python_ver(min_py_ver=MIN_PYTHON_VER_DEF):
         "Info: Python kernel version %s.%s.%s OK<br>"
         % (sys.version_info[0], sys.version_info[1], sys.version_info[2])
     )
+
+
+def _check_mp_install(min_mp_ver, mp_release, extras, pip_quiet):
+    """Check for and try to install required MSTICPy version."""
+    # Use the release ver specified in params, in the environment or
+    # the notebook default.
+    pkg_version = _get_pkg_version(min_mp_ver)
+    mp_install_version = mp_release or os.environ.get("MP_TEST_VER", str(pkg_version))
+    exact_version = bool(mp_release or os.environ.get("MP_TEST_VER"))
+
+    try:
+        check_mp_ver(min_msticpy_ver=mp_install_version)
+        if extras:
+            # If any extras are specified, always trigger an install
+            _disp_html("Running install to ensure extras are installed...<br>")
+            _install_mp(
+                mp_install_version=mp_install_version,
+                exact_version=exact_version,
+                extras=extras,
+                quiet=pip_quiet,
+            )
+    except ImportError:
+        _install_mp(
+            mp_install_version=mp_install_version,
+            exact_version=exact_version,
+            extras=extras,
+            quiet=pip_quiet,
+        )
+        _disp_html("Installation completed. Attempting to re-import/reload MSTICPy...")
+        # pylint: disable=unused-import, import-outside-toplevel
+        if "msticpy" in sys.modules:
+            try:
+                importlib.reload(sys.modules["msticpy"])
+            except ImportError:
+                _disp_html(RELOAD_MP)
+        else:
+            import msticpy
+        # pylint: enable=unused-import, import-outside-toplevel
+        check_mp_ver(min_msticpy_ver=mp_install_version)
+    except RuntimeError:
+        _disp_html("Installation skipped.")
 
 
 # pylint: disable=import-outside-toplevel
@@ -243,10 +251,8 @@ def _install_mp(mp_install_version, exact_version, extras, quiet=True):
     mp_pkg_spec = f"{mp_pkg_spec}{pkg_op}{mp_install_version}"
     sp_args.append(mp_pkg_spec)
 
-    display(
-        HTML(
-            f"<br>Running pip {' '.join(sp_args)} - this may take a few moments...<br>"
-        )
+    _disp_html(
+        f"<br>Running pip {' '.join(sp_args)} - this may take a few moments...<br>"
     )
 
     ip_shell = get_ipython()
@@ -291,7 +297,32 @@ def _run_user_settings():
     user_folder = get_aml_user_folder()
     if user_folder.joinpath("nbuser_settings.py").is_file():
         sys.path.append(str(user_folder))
-        import nbuser_settings
+        import nbuser_settings  # pylint: disable=unused-import, import-error
+
+
+def _set_mpconfig_var():
+    """Set MSTICPYCONFIG to file in user directory if no other found."""
+    mp_path_val = os.environ.get(MP_ENV_VAR)
+    if (
+        # If a valid MSTICPYCONFIG value is found - return
+        (mp_path_val and Path(mp_path_val).is_file())
+        # Or if there is a msticpconfig in the current folder.
+        or Path(".").joinpath(MP_FILE).is_file()
+    ):
+        return
+    # Otherwise check the user's root folder
+    user_dir = get_aml_user_folder()
+    mp_path = Path(user_dir).joinpath(MP_FILE)
+    if mp_path.is_file():
+        # If there's a file there, set the env variable to that.
+        os.environ[MP_ENV_VAR] = str(mp_path)
+        # Since we have already imported msticpy to check the version
+        # it will have already configured settings so we need to refresh.
+        from msticpy.common.pkg_config import refresh_config
+        refresh_config()
+        _disp_html(
+            f"<br>No {MP_FILE} found. Will use {MP_FILE} in user folder {user_dir}<br>"
+        )
 
 
 def _get_vm_metadata():
@@ -348,36 +379,27 @@ def _check_kql_prereqs():
         python -m pip uninstall enum34
         # Install pygobject
         python -m install pygobject
-    """
 
+    """
     try:
         # If this successfully imports, we are ok
         import gi
-
         del gi
     except ImportError:
-        try:
-            # Check for system packages
-            ip_shell = get_ipython()
-            apt_list = ip_shell.run_line_magic("sx", "apt list")
-            apt_list = [apt.split("/", maxsplit=1)[0] for apt in apt_list]
-            for apt_pkg in ("libgirepository1.0-dev", "gir1.2-secret-1"):
-                if apt_pkg not in apt_list:
-                    _disp_html(
-                        f"Kqlmagic pre-req '{apt_pkg}' not installed. Installing..."
-                    )
-                    ip_shell.run_line_magic("sc", f"sudo apt install {apt_pkg}")
+        # Check for system packages
+        ip_shell = get_ipython()
+        apt_list = ip_shell.run_line_magic("sx", "apt list")
+        apt_list = [apt.split("/", maxsplit=1)[0] for apt in apt_list]
+        for apt_pkg in ("libgirepository1.0-dev", "gir1.2-secret-1"):
+            if apt_pkg not in apt_list:
+                _disp_html(f"Kqlmagic pre-req '{apt_pkg}' not installed. Installing...")
+                ip_shell.run_line_magic("sc", f"sudo apt install {apt_pkg}")
 
-            # If this successfully imports, we want to remove it since
-            # a) it breaks the PyGObject setup
-            # b) it shouldn't be installed in > Py34 anyway
-            import enum34
-
-            _disp_html("Conflicting package 'enum34' found. Uninstalling...")
-            ip_shell.run_line_magic("pip", "uninstall -y enum34")
-            del enum34
-        except ImportError:
-            pass
+        # If this successfully imports, we want to remove it since
+        # a) it breaks the PyGObject setup
+        # b) it shouldn't be installed in > Py34 anyway
+        _disp_html("Conflicting package 'enum34' found. Uninstalling...")
+        ip_shell.run_line_magic("pip", "uninstall -y enum34")
 
         _disp_html("Kqlmagic python pre-req 'PyGObject' not installed. Installing...")
         ip_shell.run_line_magic("pip", "install PyGObject")
