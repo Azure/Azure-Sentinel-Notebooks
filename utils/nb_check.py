@@ -66,7 +66,7 @@ def check_python_ver(min_py_ver=MIN_PYTHON_VER_DEF):
         )
     )
 
-    _check_nteract()
+    os.environ["KQLMAGIC_EXTRAS_REQUIRES"] = "jupyter-extended"
 
 
 # pylint: disable=import-outside-toplevel
@@ -86,10 +86,10 @@ def check_mp_ver(min_msticpy_ver=MSTICPY_REQ_VERSION):
 
     """
     display(HTML("Checking msticpy version..."))
+    wrong_ver_err = "msticpy %s.%s.%s or later is needed." % min_msticpy_ver
     try:
         import msticpy
-        wrong_ver_err = "msticpy %s.%s.%s or later is needed." % min_msticpy_ver
-        mp_version = tuple([int(v) for v in msticpy.__version__.split(".")])
+        mp_version = tuple(int(ver) for ver in msticpy.__version__.split(".") if ver.isnumeric())
         if mp_version < min_msticpy_ver:
             raise ImportError(wrong_ver_err)
 
@@ -97,7 +97,7 @@ def check_mp_ver(min_msticpy_ver=MSTICPY_REQ_VERSION):
         display(HTML(MISSING_PKG_ERR.format(package="msticpy")))
         resp = input("Install? (y/n)")  # nosec
         if resp.casefold().startswith("y"):
-            raise ImportError("Install msticpy")
+            raise
 
         display(
             HTML(
@@ -115,22 +115,3 @@ def check_mp_ver(min_msticpy_ver=MSTICPY_REQ_VERSION):
         raise RuntimeError(wrong_ver_err)
 
     display(HTML("msticpy version %s.%s.%s OK" % mp_version))
-
-
-_NTERACT_MSSG = """
-<b>Azure ML detected</b><br>
-It looks like this notebook is running in an Azure Machine Learning workspace.
-If you using the AzureML native notebook interface
-(i.e. not Jupyter or Jupyter lab) we need to adjust a
-setting for the UI to behave properly.
-Ignoring or answering "n" will not affect the functionality of the notebook
-but you may see some extraneous UI elements being displayed.
-"""
-
-
-def _check_nteract():
-    if os.environ.get("USER", "").casefold() == "azureuser":
-        display(HTML(_NTERACT_MSSG))
-        set_app = input("Configure for Azure ML Notebooks? (y/n)")  # nosec
-        if set_app.casefold().startswith("y"):
-            os.environ["KQLMAGIC_NOTEBOOK_APP"] = "nteract"
