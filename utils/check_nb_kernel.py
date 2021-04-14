@@ -54,11 +54,16 @@ IP_KERNEL_SPEC = {
         "display_name": "Python 3.6",
     },
     "python3": {"name": "python3", "language": "python", "display_name": "Python 3"},
-    "python3-azureml": {
+    "azureml_36": {
         "name": "python3-azureml",
         "language": "python",
-        "display_name": "Python 3.6 - AzureML",
+        "display_name": "Python 3.6 - AzureML"
     },
+    "azureml_38": {
+        "name": "python38-azureml",
+        "language": "python",
+        "display_name": "Python 3.8 - AzureML"
+    }
 }
 
 
