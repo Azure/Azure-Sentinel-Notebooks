@@ -5,7 +5,8 @@
 
 trigger:
 - master
-
+pr:
+- master
 pool:
   vmImage: 'ubuntu-latest'
 strategy:
@@ -23,7 +24,15 @@ steps:
 
 - script: |
     python -m pip install --upgrade pip
-    pip install -r requirements.txt
+    python -m pip install -r requirements.txt
   displayName: 'Install dependencies'
 
+- script: |
+    python -m pip install nbconvert
+    python -m pip install jupyter_contrib_nbextensions
 
+    set nbconver_opts=--ExecutePreprocessor.timeout=60 --ExecutePreprocessor.kernel_name=python3 --to notebook
+    set nbconver_opts=--ExecutePreprocessor.timeout=60 --ExecutePreprocessor.kernel_name=python3 --log-level 20 --allow-errors --to notebook
+    mdir -p $(System.DefaultWorkingDirectory)/nb_output
+    set nbconver_opts=$nbconver_opts --output-dir=$(System.DefaultWorkingDirectory)/nb_output
+    jupyter nbconvert $nbconver_opts --execute "Machine Learning in Notebooks Examples.ipynb"
