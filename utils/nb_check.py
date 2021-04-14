@@ -263,9 +263,9 @@ def _set_kql_env_vars(extras):
     jp_extended = ("azsentinel", "azuresentinel", "kql")
     # If running in
     if extras and any(extra for extra in extras if extra in jp_extended):
-        os.environ["KQLMAGIC_EXTRAS_REQUIRES"] = "jupyter-extended"
+        os.environ["KQLMAGIC_EXTRAS_REQUIRE"] = "jupyter-extended"
     else:
-        os.environ["KQLMAGIC_EXTRAS_REQUIRES"] = "jupyter-basic"
+        os.environ["KQLMAGIC_EXTRAS_REQUIRE"] = "jupyter-basic"
     os.environ["KQLMAGIC_AZUREML_COMPUTE"] = _get_vm_fqdn()
 
 
@@ -319,6 +319,7 @@ def _set_mpconfig_var():
         # Since we have already imported msticpy to check the version
         # it will have already configured settings so we need to refresh.
         from msticpy.common.pkg_config import refresh_config
+
         refresh_config()
         _disp_html(
             f"<br>No {MP_FILE} found. Will use {MP_FILE} in user folder {user_dir}<br>"
@@ -338,12 +339,15 @@ def _get_vm_metadata():
 
 def _get_vm_fqdn():
     """Get the FQDN of the host."""
+    az_region = (_get_vm_metadata().get("compute", {}).get("location"),)
     return ".".join(
         [
             socket.gethostname(),
-            _get_vm_metadata().get("compute", {}).get("location"),
+            az_region,
             "instances.azureml.ms",
         ]
+        if az_region
+        else ""
     )
 
 
@@ -384,6 +388,7 @@ def _check_kql_prereqs():
     try:
         # If this successfully imports, we are ok
         import gi
+
         del gi
     except ImportError:
         # Check for system packages
