@@ -332,3 +332,4 @@ ASALocalRun/
 **/Kqlmagic_temp_files/**
 **/.mypy_cache/**
 **/kqlmagic/**
+/.vscode/**

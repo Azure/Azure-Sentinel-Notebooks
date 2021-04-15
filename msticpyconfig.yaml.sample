@@ -61,3 +61,64 @@ TIProviders:
   TorExitNodes:
     Primary: True
     Provider: "Tor"
+OtherProviders:
+  GeoIPLite:
+    Args:
+      AuthKey: c88dd3c2-d657-4eb3-b913-58d58d811a41
+    Provider: GeoLiteLookup
+  IPStack:
+    Args:
+      AuthKey:c88dd3c2-d657-4eb3-b913-58d58d811a41
+    Provider: IPStackLookup
+DataProviders:
+  AzureCLI:
+    Args:
+      auth_methods: cli # options=[env; msi; cli; interactive]
+  Splunk:
+    Args:
+      host: my-splunk-srv
+      username: sp_user
+  LocalData:
+    data_paths: /home/myuser/.local_data
+  Mordor:
+    save_folder: /home/myuser/.mordor_cache
+    use_cached: True
+KeyVault:
+  Authority: global
+  AzureRegion: Azure region name
+  ResourceGroup: MyResourceGroup
+  SubscriptionId: c88dd3c2-d657-4eb3-b913-58d58d811a41
+  TenantId: c88dd3c2-d657-4eb3-b913-58d58d811a41
+  UseKeyring: true
+  VaultName: my-vault-name
+UserDefaults:
+  # List of query providers to load
+  QueryProviders:
+    AzureSentinel:
+      Default:
+        alias: asi
+        connect: False
+      CyberSoc:
+        alias: soc
+        connect: False
+    Splunk:
+      connect: False
+    LocalData:
+      alias: local
+  # List of other providers/components to load
+  LoadComponents:
+    TILookup:
+    GeoIpLookup:
+      provider: GeoLiteLookup
+    Notebooklets:
+      query_provider:
+        LocalData:
+          workspace: CyberSoc
+          some_param: some_value
+    Pivot:
+    AzureData:
+      auth_methods: ['cli','interactive']
+      connect: False
+    AzureSentinelAPI:
+      auth_methods: ['env','interactive']
+      connect: False
