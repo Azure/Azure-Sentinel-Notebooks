@@ -57,6 +57,8 @@ NB_CHECK_URI = (
     "Notebooks/master/utils/nb_check.py"
 )
 
+_IN_AML = os.environ.get("APPSETTING_WEBSITE_SITE_NAME") == "AMLComputeInstance"
+
 
 def check_versions(
     min_py_ver=MIN_PYTHON_VER_DEF,
@@ -276,7 +278,8 @@ def _set_kql_env_vars(extras):
         os.environ["KQLMAGIC_EXTRAS_REQUIRE"] = "jupyter-extended"
     else:
         os.environ["KQLMAGIC_EXTRAS_REQUIRE"] = "jupyter-basic"
-    os.environ["KQLMAGIC_AZUREML_COMPUTE"] = _get_vm_fqdn()
+    if _IN_AML:
+        os.environ["KQLMAGIC_AZUREML_COMPUTE"] = _get_vm_fqdn()
 
 
 def _get_pkg_version(version):
@@ -344,7 +347,8 @@ def _get_vm_metadata():
     resp = urllib.request.urlopen(req)
 
     with urllib.request.urlopen(req) as resp:
-        return json.loads(resp.read())
+        metadata = json.loads(resp.read())
+    return metadata if isinstance(metadata, dict) else {}
 
 
 def _get_vm_fqdn():
@@ -395,6 +399,8 @@ def _check_kql_prereqs():
         python -m install pygobject
 
     """
+    if not _IN_AML:
+        return
     try:
         # If this successfully imports, we are ok
         import gi
@@ -422,28 +428,28 @@ def _check_kql_prereqs():
 
 # pylint: disable=broad-except
 def _check_nb_check_ver():
+    nb_check_path = "utils/nb_check.py"
     gh_file = ""
     try:
         with request.urlopen(NB_CHECK_URI) as gh_fh:
             gh_file = gh_fh.read().decode("utf-8")
     except Exception:
         _disp_html(
-            "<h4><font color='orange'>"
             f"Warning could not check version of {NB_CHECK_URI}"
         )
         return True
-    nbc_path = get_aml_user_folder().joinpath("utils/nb_check.py")
+    nbc_path = get_aml_user_folder().joinpath(nb_check_path)
     if nbc_path.is_file():
         try:
             curr_file = nbc_path.read_text()
         except Exception:
-            print("Warning could not check version local")
+            _disp_html(f"Warning could not check version local {nb_check_path}")
 
     if _get_file_ver(gh_file) == _get_file_ver(curr_file):
         return True
 
-    _disp_html("Updating local utils/nb_check.py...")
-    bk_up = get_aml_user_folder().joinpath("utils/nb_check_new.py._save_")
+    _disp_html("Updating local {nb_check_path}...")
+    bk_up = get_aml_user_folder().joinpath(f"{nb_check_path}._save_")
     if bk_up.is_file():
         bk_up.unlink()
     nbc_path.replace(bk_up)
@@ -455,7 +461,7 @@ def _check_nb_check_ver():
 
     _disp_html(
         "<h4><font color='orange'>"
-        "Important: The version of ./utils/nb_check.py has been updated.<br>"
+        f"Important: The version of {nb_check_path} has been updated.<br>"
         "Please re-run this to load the new version."
         "</font></h4>"
     )
@@ -463,7 +469,7 @@ def _check_nb_check_ver():
 
 
 def _get_file_ver(file_text):
-    f_match = re.search(r"__version__ = \"([\d.]+)\"", file_text)
+    f_match = re.search(r"__version__\s*=\s*\"([\d.]+)\"", file_text)
     if f_match:
         return f_match.groups()[0]
     return None
