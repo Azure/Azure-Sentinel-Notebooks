@@ -66,6 +66,7 @@ def check_versions(
     extras=None,
     mp_release=None,
     pip_quiet=True,
+    **kwargs,
 ):
     """
     Check the current versions of the Python kernel and MSTICPy.
@@ -93,6 +94,7 @@ def check_versions(
         and the user chose not to upgrade
 
     """
+    del kwargs
     _disp_html("Note: you may need to scroll down this cell to see the full output.")
     _disp_html("<h4>Starting notebook pre-checks...</h4>")
     if isinstance(min_py_ver, str):
