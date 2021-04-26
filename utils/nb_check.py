@@ -355,7 +355,7 @@ def _get_vm_metadata():
 
 def _get_vm_fqdn():
     """Get the FQDN of the host."""
-    az_region = (_get_vm_metadata().get("compute", {}).get("location"),)
+    az_region = (_get_vm_metadata().get("compute", {}).get("location"))
     return ".".join(
         [
             socket.gethostname(),
