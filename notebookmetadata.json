@@ -1,74 +1,90 @@
 [
   {
     "id": "AnomalyLookup",
-    "lastRevisedDate": "2021-03-01"
+    "lastRevisedDate": "2021-04-27"
   },
   {
     "id": "Office365Exploring",
-    "lastRevisedDate": "2021-04-14"
+    "lastRevisedDate": "2021-04-15"
   },
   {
     "id": "ProcessAlert",
-    "lastRevisedDate": "2021-04-14"
+    "lastRevisedDate": "2021-04-15"
   },
   {
     "id": "WindowsHostExplorer",
-    "lastRevisedDate": "2021-04-14"
+    "lastRevisedDate": "2021-04-15"
   },
   {
     "id": "AccountExplorer",
-    "lastRevisedDate": "2021-04-14"
+    "lastRevisedDate": "2021-04-15"
   },
   {
     "id": "DomainExplorer",
-    "lastRevisedDate": "2020-06-26"
+    "lastRevisedDate": "2021-04-15"
   },
   {
     "id": "IPExplorer",
-    "lastRevisedDate": "2021-04-14"
+    "lastRevisedDate": "2021-04-15"
   },
   {
     "id": "LinuxExplorer",
-    "lastRevisedDate": "2021-04-14"
+    "lastRevisedDate": "2021-04-15"
   },
   {
     "id": "Covid19",
-    "lastRevisedDate": "2021-04-14"
+    "lastRevisedDate": "2021-04-15"
   },
   {
     "id": "AlertTriage",
-    "lastRevisedDate": "2021-04-14"
+    "lastRevisedDate": "2021-04-15"
   },
   {
     "id": "GettingStarted",
-    "lastRevisedDate": "2021-04-14"
+    "lastRevisedDate": "2021-04-20"
   },
   {
     "id": "MDATP",
-    "lastRevisedDate": "2021-04-14"
+    "lastRevisedDate": "2021-04-15"
   },
   {
     "id": "Exchange",
-    "lastRevisedDate": "2021-04-14"
+    "lastRevisedDate": "2021-04-15"
   },
   {
     "id": "PowerShell",
-    "lastRevisedDate": "2020-09-28"
+    "lastRevisedDate": "2021-04-27"
   },
   {
     "id": "MLExamples",
-    "lastRevisedDate": "2021-04-14"
+    "lastRevisedDate": "2021-04-15"
   },
   {
     "id": "Solarwinds",
-    "lastRevisedDate": "2021-04-14"
+    "lastRevisedDate": "2021-04-15"
   },
   {
     "id": "HandsOnAPI",
-    "lastRevisedDate": "2021-03-01"
+    "lastRevisedDate": "2021-04-27"
   },
   {
     "id": "HandsOnSDK",
-    "lastRevisedDate": "2021-03-01"
+    "lastRevisedDate": "2021-04-27"
+  },
+  {
+    "id": "ConfigEnv",
+    "lastRevisedDate": "2021-04-21"
+  },
+  {
+    "id": "CredScanBlob",
+    "lastRevisedDate": "2021-04-27"
+  },
+  {
+    "id": "CredScanADX",
+    "lastRevisedDate": "2021-04-27"
+  },
+  {
+    "id": "CredScanLA",
+    "lastRevisedDate": "2021-04-27"
   }
 ]
