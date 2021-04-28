@@ -7,14 +7,18 @@
 import importlib
 import json
 import os
+import re
 import socket
 import sys
 import urllib
 from pathlib import Path
+from urllib import request
 
 from IPython import get_ipython
 from IPython.display import HTML, display
 from pkg_resources import parse_version
+
+__version__ = "1.5.0"
 
 AZ_GET_STARTED = (
     "https://github.com/Azure/Azure-Sentinel-Notebooks/blob/master/A%20Getting"
@@ -48,6 +52,12 @@ MSTICPY_REQ_VERSION = (0, 9, 0)
 VER_RGX = r"(?P<maj>\d+)\.(?P<min>\d+).(?P<pnt>\d+)(?P<suff>.*)"
 MP_ENV_VAR = "MSTICPYCONFIG"
 MP_FILE = "msticpyconfig.yaml"
+NB_CHECK_URI = (
+    "https://raw.githubusercontent.com/Azure/Azure-Sentinel-"
+    "Notebooks/master/utils/nb_check.py"
+)
+
+_IN_AML = os.environ.get("APPSETTING_WEBSITE_SITE_NAME") == "AMLComputeInstance"
 
 
 def check_versions(
@@ -56,6 +66,7 @@ def check_versions(
     extras=None,
     mp_release=None,
     pip_quiet=True,
+    **kwargs,
 ):
     """
     Check the current versions of the Python kernel and MSTICPy.
@@ -83,14 +94,17 @@ def check_versions(
         and the user chose not to upgrade
 
     """
+    del kwargs
     _disp_html("Note: you may need to scroll down this cell to see the full output.")
     _disp_html("<h4>Starting notebook pre-checks...</h4>")
     if isinstance(min_py_ver, str):
         min_py_ver = _get_pkg_version(min_py_ver).release
     check_python_ver(min_py_ver=min_py_ver)
 
+    if not _check_nb_check_ver():
+        _disp_html("Check stopped because nb_check has been updated.")
+        return
     _check_mp_install(min_mp_ver, mp_release, extras, pip_quiet)
-
     _check_kql_prereqs()
     _set_kql_env_vars(extras)
     _run_user_settings()
@@ -266,7 +280,8 @@ def _set_kql_env_vars(extras):
         os.environ["KQLMAGIC_EXTRAS_REQUIRE"] = "jupyter-extended"
     else:
         os.environ["KQLMAGIC_EXTRAS_REQUIRE"] = "jupyter-basic"
-    os.environ["KQLMAGIC_AZUREML_COMPUTE"] = _get_vm_fqdn()
+    if _IN_AML:
+        os.environ["KQLMAGIC_AZUREML_COMPUTE"] = _get_vm_fqdn()
 
 
 def _get_pkg_version(version):
@@ -334,12 +349,13 @@ def _get_vm_metadata():
     resp = urllib.request.urlopen(req)
 
     with urllib.request.urlopen(req) as resp:
-        return json.loads(resp.read())
+        metadata = json.loads(resp.read())
+    return metadata if isinstance(metadata, dict) else {}
 
 
 def _get_vm_fqdn():
     """Get the FQDN of the host."""
-    az_region = (_get_vm_metadata().get("compute", {}).get("location"),)
+    az_region = (_get_vm_metadata().get("compute", {}).get("location"))
     return ".".join(
         [
             socket.gethostname(),
@@ -385,6 +401,8 @@ def _check_kql_prereqs():
         python -m install pygobject
 
     """
+    if not _IN_AML:
+        return
     try:
         # If this successfully imports, we are ok
         import gi
@@ -408,3 +426,52 @@ def _check_kql_prereqs():
 
         _disp_html("Kqlmagic python pre-req 'PyGObject' not installed. Installing...")
         ip_shell.run_line_magic("pip", "install PyGObject")
+
+
+# pylint: disable=broad-except
+def _check_nb_check_ver():
+    nb_check_path = "utils/nb_check.py"
+    gh_file = ""
+    try:
+        with request.urlopen(NB_CHECK_URI) as gh_fh:
+            gh_file = gh_fh.read().decode("utf-8")
+    except Exception:
+        _disp_html(
+            f"Warning could not check version of {NB_CHECK_URI}"
+        )
+        return True
+    nbc_path = get_aml_user_folder().joinpath(nb_check_path)
+    if nbc_path.is_file():
+        try:
+            curr_file = nbc_path.read_text()
+        except Exception:
+            _disp_html(f"Warning could not check version local {nb_check_path}")
+
+    if _get_file_ver(gh_file) == _get_file_ver(curr_file):
+        return True
+
+    _disp_html("Updating local {nb_check_path}...")
+    bk_up = get_aml_user_folder().joinpath(f"{nb_check_path}._save_")
+    if bk_up.is_file():
+        bk_up.unlink()
+    nbc_path.replace(bk_up)
+    try:
+        with open(nbc_path, "w") as repl_fh:
+            repl_fh.write(gh_file)
+    except Exception:
+        bk_up.replace(nbc_path)
+
+    _disp_html(
+        "<h4><font color='orange'>"
+        f"Important: The version of {nb_check_path} has been updated.<br>"
+        "Please re-run this to load the new version."
+        "</font></h4>"
+    )
+    return False
+
+
+def _get_file_ver(file_text):
+    f_match = re.search(r"__version__\s*=\s*\"([\d.]+)\"", file_text)
+    if f_match:
+        return f_match.groups()[0]
+    return None
