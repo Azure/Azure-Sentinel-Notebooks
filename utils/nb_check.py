@@ -379,8 +379,8 @@ def _check_kql_prereqs():
     From a notebook run:
 
         %pip uninstall enum34
-        !sudo apt install libgirepository1.0-dev
-        !sudo apt install gir1.2-secret-1
+        !sudo apt-get --yes install libgirepository1.0-dev
+        !sudo apt-get --yes install gir1.2-secret-1
         %pip install pygobject
 
     You can also do this from a terminal - but ensure that you've
@@ -416,7 +416,7 @@ def _check_kql_prereqs():
         for apt_pkg in ("libgirepository1.0-dev", "gir1.2-secret-1"):
             if apt_pkg not in apt_list:
                 _disp_html(f"Kqlmagic pre-req '{apt_pkg}' not installed. Installing...")
-                ip_shell.run_line_magic("sc", f"sudo apt install {apt_pkg}")
+                ip_shell.run_line_magic("sc", f"sudo apt-get --yes install {apt_pkg}")
 
         # If this successfully imports, we want to remove it since
         # a) it breaks the PyGObject setup
