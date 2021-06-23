@@ -23,7 +23,7 @@ pip uninstall --yes enum34 2>&1 | tee -a $LOG
 conda install --yes --quiet -c conda-forge pygobject 2>&1 | tee -a $LOG
 
 echo Installing msticpy in $ENVIRONMENT 2>&1 | tee -a $LOG
-pip install msticpy 2>&1 | tee -a $LOG
+pip install msticpy[azuresentinel] 2>&1 | tee -a $LOG
 conda deactivate
 
 echo Finished updating $ENVIRONMENT 2>&1 | tee -a $LOG
