@@ -36,5 +36,8 @@ steps:
     mdir -p $(System.DefaultWorkingDirectory)/nb_output
     set nbconver_opts=$nbconver_opts --output-dir=$(System.DefaultWorkingDirectory)/nb_output
     jupyter nbconvert $nbconver_opts --execute "Machine Learning in Notebooks Examples.ipynb"
-    tour_nb = "A Tour of Cybersec notebook features.ipynb"
-    if [[ -f $tour_nb ]]; then jupyter nbconvert $nbconver_opts --execute $tour_nb
+    tour_nb="A Tour of Cybersec notebook features.ipynb"
+    if [[ -f $tour_nb ]]
+    then
+      jupyter nbconvert $nbconver_opts --execute $tour_nb
+    fi
