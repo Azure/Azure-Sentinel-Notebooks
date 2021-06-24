@@ -14,7 +14,7 @@ strategy:
     Python36:
       python.version: '3.6'
     Python37:
-      python.version: '3.7'
+      python.version: '3.8'
 
 steps:
 - task: UsePythonVersion@0
@@ -36,3 +36,5 @@ steps:
     mdir -p $(System.DefaultWorkingDirectory)/nb_output
     set nbconver_opts=$nbconver_opts --output-dir=$(System.DefaultWorkingDirectory)/nb_output
     jupyter nbconvert $nbconver_opts --execute "Machine Learning in Notebooks Examples.ipynb"
+    tour_nb = "A Tour of Cybersec notebook features.ipynb"
+    if [[ -f $tour_nb ]]; then jupyter nbconvert $nbconver_opts --execute $tour_nb
