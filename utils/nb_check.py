@@ -18,7 +18,7 @@ from IPython import get_ipython
 from IPython.display import HTML, display
 from pkg_resources import parse_version
 
-__version__ = "1.5.0"
+__version__ = "2.0.0"
 
 AZ_GET_STARTED = (
     "https://github.com/Azure/Azure-Sentinel-Notebooks/blob/master/A%20Getting"
