@@ -105,7 +105,7 @@ def check_versions(
         _disp_html("Check stopped because nb_check has been updated.")
         return
     _check_mp_install(min_mp_ver, mp_release, extras, pip_quiet)
-    _check_kql_prereqs()
+    # _check_kql_prereqs()
     _set_kql_env_vars(extras)
     _run_user_settings()
     _set_mpconfig_var()
@@ -447,7 +447,7 @@ def _check_nb_check_ver():
         except Exception:
             _disp_html(f"Warning could not check version local {nb_check_path}")
 
-    if _get_file_ver(gh_file) == _get_file_ver(curr_file):
+    if _get_file_ver(gh_file) <= _get_file_ver(curr_file):
         return True
 
     _disp_html("Updating local {nb_check_path}...")
