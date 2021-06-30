@@ -1,7 +1,7 @@
 [
   {
     "id": "AnomalyLookup",
-    "lastRevisedDate": "2021-06-08"
+    "lastRevisedDate": "2021-06-24"
   },
   {
     "id": "Office365Exploring",
@@ -65,11 +65,11 @@
   },
   {
     "id": "HandsOnAPI",
-    "lastRevisedDate": "2021-06-08"
+    "lastRevisedDate": "2021-06-24"
   },
   {
     "id": "HandsOnSDK",
-    "lastRevisedDate": "2021-06-08"
+    "lastRevisedDate": "2021-06-24"
   },
   {
     "id": "ConfigEnv",
@@ -77,14 +77,18 @@
   },
   {
     "id": "CredScanBlob",
-    "lastRevisedDate": "2021-06-08"
+    "lastRevisedDate": "2021-06-24"
   },
   {
     "id": "CredScanADX",
-    "lastRevisedDate": "2021-06-08"
+    "lastRevisedDate": "2021-06-24"
   },
   {
     "id": "CredScanLA",
-    "lastRevisedDate": "2021-06-08"
+    "lastRevisedDate": "2021-06-24"
+  },
+  {
+    "id": "Tour",
+    "lastRevisedDate": "2021-06-24"
   }
 ]
