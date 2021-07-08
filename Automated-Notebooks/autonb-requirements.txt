@@ -1,0 +1,5 @@
+msticpy[azsentinel]>=1.2.3
+msticnb>=0.2.2
+papermill>=2.3.3
+python-whois>=0.7.3
+nbformat>=5.1.3
