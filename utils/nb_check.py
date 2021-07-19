@@ -18,7 +18,7 @@ from IPython import get_ipython
 from IPython.display import HTML, display
 from pkg_resources import parse_version
 
-__version__ = "1.5.0"
+__version__ = "2.0.0"
 
 AZ_GET_STARTED = (
     "https://github.com/Azure/Azure-Sentinel-Notebooks/blob/master/A%20Getting"
@@ -101,14 +101,7 @@ def check_versions(
         min_py_ver = _get_pkg_version(min_py_ver).release
     check_python_ver(min_py_ver=min_py_ver)
 
-    if not _check_nb_check_ver():
-        _disp_html("Check stopped because nb_check has been updated.")
-        return
     _check_mp_install(min_mp_ver, mp_release, extras, pip_quiet)
-    _check_kql_prereqs()
-    _set_kql_env_vars(extras)
-    _run_user_settings()
-    _set_mpconfig_var()
     _disp_html("<h4>Notebook pre-checks complete.</h4>")
 
 
@@ -230,7 +223,7 @@ def check_mp_ver(min_msticpy_ver=MSTICPY_REQ_VERSION):
         if inst_version < mp_min_pkg_ver:
             raise ImportError(wrong_ver_err)
 
-    except ImportError:
+    except ImportError as err:
         _disp_html(
             MISSING_PKG_ERR.format(
                 package="msticpy",
@@ -250,7 +243,7 @@ def check_mp_ver(min_msticpy_ver=MSTICPY_REQ_VERSION):
                 nbk_uri=AZ_GET_STARTED,
             )
         )
-        raise RuntimeError(wrong_ver_err)
+        raise RuntimeError(wrong_ver_err) from err
 
     _disp_html(f"Info: msticpy version {mp_min_pkg_ver} OK<br>")
 
@@ -271,17 +264,6 @@ def _install_mp(mp_install_version, exact_version, extras, quiet=True):
 
     ip_shell = get_ipython()
     ip_shell.run_line_magic("pip", " ".join(sp_args))
-
-
-def _set_kql_env_vars(extras):
-    jp_extended = ("azsentinel", "azuresentinel", "kql")
-    # If running in
-    if extras and any(extra for extra in extras if extra in jp_extended):
-        os.environ["KQLMAGIC_EXTRAS_REQUIRE"] = "jupyter-extended"
-    else:
-        os.environ["KQLMAGIC_EXTRAS_REQUIRE"] = "jupyter-basic"
-    if _IN_AML:
-        os.environ["KQLMAGIC_AZUREML_COMPUTE"] = _get_vm_fqdn()
 
 
 def _get_pkg_version(version):
@@ -306,172 +288,3 @@ def get_aml_user_folder():
             break
         user_path = user_path.joinpath(part)
     return user_path
-
-
-def _run_user_settings():
-    user_folder = get_aml_user_folder()
-    if user_folder.joinpath("nbuser_settings.py").is_file():
-        sys.path.append(str(user_folder))
-        import nbuser_settings  # pylint: disable=unused-import, import-error
-
-
-def _set_mpconfig_var():
-    """Set MSTICPYCONFIG to file in user directory if no other found."""
-    mp_path_val = os.environ.get(MP_ENV_VAR)
-    if (
-        # If a valid MSTICPYCONFIG value is found - return
-        (mp_path_val and Path(mp_path_val).is_file())
-        # Or if there is a msticpconfig in the current folder.
-        or Path(".").joinpath(MP_FILE).is_file()
-    ):
-        return
-    # Otherwise check the user's root folder
-    user_dir = get_aml_user_folder()
-    mp_path = Path(user_dir).joinpath(MP_FILE)
-    if mp_path.is_file():
-        # If there's a file there, set the env variable to that.
-        os.environ[MP_ENV_VAR] = str(mp_path)
-        # Since we have already imported msticpy to check the version
-        # it will have already configured settings so we need to refresh.
-        from msticpy.common.pkg_config import refresh_config
-
-        refresh_config()
-        _disp_html(
-            f"<br>No {MP_FILE} found. Will use {MP_FILE} in user folder {user_dir}<br>"
-        )
-
-
-def _get_vm_metadata():
-    """Use local request to get VM metadata."""
-    vm_uri = "http://169.254.169.254/metadata/instance?api-version=2017-08-01"
-    req = urllib.request.Request(vm_uri)
-    req.add_header("Metadata", "true")
-    resp = urllib.request.urlopen(req)
-
-    with urllib.request.urlopen(req) as resp:
-        metadata = json.loads(resp.read())
-    return metadata if isinstance(metadata, dict) else {}
-
-
-def _get_vm_fqdn():
-    """Get the FQDN of the host."""
-    az_region = (_get_vm_metadata().get("compute", {}).get("location"))
-    return ".".join(
-        [
-            socket.gethostname(),
-            az_region,
-            "instances.azureml.ms",
-        ]
-        if az_region
-        else ""
-    )
-
-
-def _check_kql_prereqs():
-    """
-    Check and install packages for Kqlmagic/msal_extensions.
-
-    Notes
-    -----
-    Kqlmagic may trigger warnings about a missing PyGObject package
-    and some system library dependencies. To fix this do the
-    following:<br>
-    From a notebook run:
-
-        %pip uninstall enum34
-        !sudo apt-get --yes install libgirepository1.0-dev
-        !sudo apt-get --yes install gir1.2-secret-1
-        %pip install pygobject
-
-    You can also do this from a terminal - but ensure that you've
-    activated the environment corresponding to the kernel you are
-    using prior to running the pip commands.
-
-        # Install the libgi dependency
-        sudo apt install libgirepository1.0-dev
-        sudo apt install gir1.2-secret-1
-
-        # activate the environment
-        # conda activate azureml_py38
-        # source ./env_path/scripts/activate
-
-        # Uninstall enum34
-        python -m pip uninstall enum34
-        # Install pygobject
-        python -m install pygobject
-
-    """
-    if not _IN_AML:
-        return
-    try:
-        # If this successfully imports, we are ok
-        import gi
-
-        del gi
-    except ImportError:
-        # Check for system packages
-        ip_shell = get_ipython()
-        apt_list = ip_shell.run_line_magic("sx", "apt list")
-        apt_list = [apt.split("/", maxsplit=1)[0] for apt in apt_list]
-        for apt_pkg in ("libgirepository1.0-dev", "gir1.2-secret-1"):
-            if apt_pkg not in apt_list:
-                _disp_html(f"Kqlmagic pre-req '{apt_pkg}' not installed. Installing...")
-                ip_shell.run_line_magic("sc", f"sudo apt-get --yes install {apt_pkg}")
-
-        # If this successfully imports, we want to remove it since
-        # a) it breaks the PyGObject setup
-        # b) it shouldn't be installed in > Py34 anyway
-        _disp_html("Conflicting package 'enum34' found. Uninstalling...")
-        ip_shell.run_line_magic("pip", "uninstall -y enum34")
-
-        _disp_html("Kqlmagic python pre-req 'PyGObject' not installed. Installing...")
-        ip_shell.run_line_magic("pip", "install PyGObject")
-
-
-# pylint: disable=broad-except
-def _check_nb_check_ver():
-    nb_check_path = "utils/nb_check.py"
-    gh_file = ""
-    try:
-        with request.urlopen(NB_CHECK_URI) as gh_fh:
-            gh_file = gh_fh.read().decode("utf-8")
-    except Exception:
-        _disp_html(
-            f"Warning could not check version of {NB_CHECK_URI}"
-        )
-        return True
-    nbc_path = get_aml_user_folder().joinpath(nb_check_path)
-    if nbc_path.is_file():
-        try:
-            curr_file = nbc_path.read_text()
-        except Exception:
-            _disp_html(f"Warning could not check version local {nb_check_path}")
-
-    if _get_file_ver(gh_file) == _get_file_ver(curr_file):
-        return True
-
-    _disp_html("Updating local {nb_check_path}...")
-    bk_up = get_aml_user_folder().joinpath(f"{nb_check_path}._save_")
-    if bk_up.is_file():
-        bk_up.unlink()
-    nbc_path.replace(bk_up)
-    try:
-        with open(nbc_path, "w") as repl_fh:
-            repl_fh.write(gh_file)
-    except Exception:
-        bk_up.replace(nbc_path)
-
-    _disp_html(
-        "<h4><font color='orange'>"
-        f"Important: The version of {nb_check_path} has been updated.<br>"
-        "Please re-run this to load the new version."
-        "</font></h4>"
-    )
-    return False
-
-
-def _get_file_ver(file_text):
-    f_match = re.search(r"__version__\s*=\s*\"([\d.]+)\"", file_text)
-    if f_match:
-        return f_match.groups()[0]
-    return None

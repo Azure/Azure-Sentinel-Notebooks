@@ -30,10 +30,38 @@ sources:
     args:
       query: processes_on_host.pkl
     parameters:
+  list_host_logon_failures:
+    description: List logon failures on host
+    metadata:
+      data_families: [WindowsSecurity]
+    args:
+      query: failed_logons.pkl
+    parameters:
   OfficeActivity:
     description: Office 365 activity
     metadata:
       data_families: [Azure]
     args:
       query: exchange_admin.pkl
+    parameters:
+  get_office_windowed_sessions:
+    description: Office 365 activity
+    metadata:
+      data_families: [Azure]
+    args:
+      query: exchange_admin.pkl
+    parameters:
+  list_all_signins_geo:
+    description: All signins with Geo location data.
+    metadata:
+      data_families: [Azure]
+    args:
+      query: aad_logons.pkl
+    parameters:
+  list_alerts:
+    description: List all alerts.
+    metadata:
+      data_families: [SecurityAlert]
+    args:
+      query: alerts_list.pkl
     parameters:
