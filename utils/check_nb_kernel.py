@@ -147,7 +147,10 @@ def set_kernelspec(nb_path: str, k_tgt: str, verbose: bool = False):
                 "'"
             )
             print("  ", kernelspec, "\n")
-            nbook.rename(f"{str(nbook)}.{current_kspec_name}")
+            backup_path = (
+                f"{str(nbook).strip(nbook.suffix)}-{current_kspec_name}{nbook.suffix}"
+            )
+            nbook.rename(backup_path)
             nbformat.write(nb_obj, str(nbook))
             continue
         if verbose:
