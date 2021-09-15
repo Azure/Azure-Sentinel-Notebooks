@@ -28,6 +28,10 @@ steps:
   displayName: 'Install dependencies'
 
 - script: |
+    python -m utils.check_nb_kernel check  -p *.ipynb
+  displayName: 'Kernelspec check'
+
+- script: |
     python -m pip install nbconvert
     python -m pip install jupyter_contrib_nbextensions
 
