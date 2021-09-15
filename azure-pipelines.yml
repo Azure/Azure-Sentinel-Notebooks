@@ -22,6 +22,14 @@ steps:
     versionSpec: '$(python.version)'
   displayName: 'Use Python $(python.version)'
 
+- task: Cache@2
+  displayName: Cache pip packages
+  continueOnError: True
+  inputs:
+    key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+    restoreKeys: python
+    path: $(Pipeline.Workspace)/.pip
+  
 - script: |
     python -m pip install --upgrade pip
     python -m pip install -r requirements.txt
