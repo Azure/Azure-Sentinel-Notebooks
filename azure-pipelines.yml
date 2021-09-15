@@ -28,7 +28,7 @@ steps:
   displayName: 'Install dependencies'
 
 - script: |
-    python -m utils.check_nb_kernel check  -p *.ipynb
+    python -m utils.check_nb_kernel check  -p "*.ipynb"
   displayName: 'Kernelspec check'
 
 - script: |
