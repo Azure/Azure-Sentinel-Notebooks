@@ -31,7 +31,7 @@ steps:
   inputs:
     key: requirements.txt
     restoreKeys: python
-    path: $(Pipeline.Workspace)/.pip
+    path: $(PIP_CACHE_DIR)
   
 - script: |
     python -m pip install --upgrade pip wheel
