@@ -23,7 +23,7 @@ steps:
   displayName: Cache pip packages
   continueOnError: True
   inputs:
-    key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+    key: requirements.txt
     restoreKeys: python
     path: $(Pipeline.Workspace)/.pip
   
