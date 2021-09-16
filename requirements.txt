@@ -1,1 +1,1 @@
-msticpy>=1.3.0
+msticpy>=1.4.2
