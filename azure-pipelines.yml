@@ -6,6 +6,12 @@ pr:
 - master
 pool:
   vmImage: 'ubuntu-latest'
+schedules:
+  - cron: 0 4 * * 1
+    branches:
+      include:
+      - master
+    always: true
 strategy:
   matrix:
     Python36:
@@ -28,7 +34,8 @@ steps:
     path: $(Pipeline.Workspace)/.pip
   
 - script: |
-    python -m pip install --upgrade pip
+    python -m pip install --upgrade pip wheel
+    python -m pip install --upgrade msticpy
     python -m pip install -r requirements.txt
   displayName: 'Install dependencies'
 
