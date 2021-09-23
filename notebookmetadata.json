@@ -89,10 +89,14 @@
   },
   {
     "id": "Tour",
-    "lastRevisedDate": "2021-06-24"
+    "lastRevisedDate": "2021-09-15"
   },
   {
     "id": "LinuxCommands",
     "lastRevisedDate": "2021-06-02"
+  },
+  {
+    "id": "SynapseSetup",
+    "lastRevisedDate": "2021-09-23"
   }
 ]
