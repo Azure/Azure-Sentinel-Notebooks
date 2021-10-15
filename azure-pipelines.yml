@@ -57,3 +57,11 @@ steps:
       jupyter nbconvert $nbconver_opts --execute "$tour_nb"
     fi
   displayName: AutorunNotebooks
+- task: AntiMalware@4
+  inputs:
+    InputType: 'Basic'
+    ScanType: 'CustomScan'
+    FileDirPath: '$(Build.StagingDirectory)'
+    TreatSignatureUpdateFailureAs: 'Warning'
+    SignatureFreshness: 'UpToDate'
+    TreatStaleSignatureAs: 'Error'
