@@ -4,56 +4,78 @@ trigger:
 - master
 pr:
 - master
-pool:
-  vmImage: 'ubuntu-latest'
+
 schedules:
   - cron: 0 4 * * 1
     branches:
       include:
       - master
     always: true
-strategy:
-  matrix:
-    Python36:
-      python.version: '3.6'
-    Python38:
-      python.version: '3.8'
+jobs:
+- job: PythonTests
+  displayName: Python install and test Notebooks
+  strategy:
+    matrix:
+      Python36:
+        python.version: '3.6'
+      Python38:
+        python.version: '3.8'
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '$(python.version)'
+    displayName: 'Use Python $(python.version)'
 
-steps:
-- task: UsePythonVersion@0
-  inputs:
-    versionSpec: '$(python.version)'
-  displayName: 'Use Python $(python.version)'
+  - task: Cache@2
+    displayName: Cache pip packages
+    continueOnError: True
+    inputs:
+      key: requirements.txt
+      restoreKeys: python
+      path: $(PIP_CACHE_DIR)
+    
+  - script: |
+      python -m pip install --upgrade pip wheel
+      python -m pip install --upgrade msticpy
+      python -m pip install -r requirements.txt
+    displayName: 'Install dependencies'
 
-- task: Cache@2
-  displayName: Cache pip packages
-  continueOnError: True
-  inputs:
-    key: requirements.txt
-    restoreKeys: python
-    path: $(PIP_CACHE_DIR)
+  - script: |
+      python -m utils.check_nb_kernel check  -p "*.ipynb"
+    displayName: 'Kernelspec check'
+
+  - script: |
+      python -m pip install nbconvert
+      python -m pip install jupyter_contrib_nbextensions
+
+      nbconver_opts="--ExecutePreprocessor.timeout=60 --ExecutePreprocessor.kernel_name=python3 --log-level 20 --allow-errors --to notebook"
+      mkdir -p $(System.DefaultWorkingDirectory)/nb_output
+      nbconver_opts="$nbconver_opts --output-dir=$(System.DefaultWorkingDirectory)/nb_output"
+      jupyter nbconvert $nbconver_opts --execute "Machine Learning in Notebooks Examples.ipynb"
+      tour_nb="A Tour of Cybersec notebook features.ipynb"
+      if [[ -f "$tour_nb" ]]
+      then
+        jupyter nbconvert $nbconver_opts --execute "$tour_nb"
+      fi
+    displayName: AutorunNotebooks
+- job: SecurityChecks
+  displayName: Python install and test Notebooks
+  pool:
+    vmImage: 'windows-latest'
+  steps:
+  - task: AntiMalware@4
+    inputs:
+      InputType: 'Basic'
+      ScanType: 'CustomScan'
+      FileDirPath: '$(Build.StagingDirectory)'
+      TreatSignatureUpdateFailureAs: 'Warning'
+      SignatureFreshness: 'UpToDate'
+      TreatStaleSignatureAs: 'Error'
+  - task: CredScan@3
+  - task: SdtReport@2
+  - task: PostAnalysis@2
+    inputs:
+      GdnBreakAllTools: true
   
-- script: |
-    python -m pip install --upgrade pip wheel
-    python -m pip install --upgrade msticpy
-    python -m pip install -r requirements.txt
-  displayName: 'Install dependencies'
-
-- script: |
-    python -m utils.check_nb_kernel check  -p "*.ipynb"
-  displayName: 'Kernelspec check'
-
-- script: |
-    python -m pip install nbconvert
-    python -m pip install jupyter_contrib_nbextensions
-
-    nbconver_opts="--ExecutePreprocessor.timeout=60 --ExecutePreprocessor.kernel_name=python3 --log-level 20 --allow-errors --to notebook"
-    mkdir -p $(System.DefaultWorkingDirectory)/nb_output
-    nbconver_opts="$nbconver_opts --output-dir=$(System.DefaultWorkingDirectory)/nb_output"
-    jupyter nbconvert $nbconver_opts --execute "Machine Learning in Notebooks Examples.ipynb"
-    tour_nb="A Tour of Cybersec notebook features.ipynb"
-    if [[ -f "$tour_nb" ]]
-    then
-      jupyter nbconvert $nbconver_opts --execute "$tour_nb"
-    fi
-  displayName: AutorunNotebooks
