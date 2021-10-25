@@ -26,58 +26,108 @@
       ],
       "description": "Get Azure Sentinel configuration parameters from config.json"
     },
-  
-    "Sentinel - Set up environment for msticpy": {
-      "prefix": ["setup-msticpy"],
+
+    "Azure Sentinel - Set up environment for MSTICPy": {
+      "prefix": ["msticpy-setup"],
       "body": [
-        "#####################################################",
-        "# Sentinel - Set up environment for msticpy         #",
-        "#####################################################",
+        "#############################################",
+        "# Sentinel - Set up environment for MSTICPy #",
+        "#############################################",
         "# import some modules needed in this cell",
         "from pathlib import Path",
         "from IPython.display import display, HTML",
         "",
         "display(HTML('Checking upgrade to latest msticpy version'))",
-        "%pip install --upgrade --quiet msticpy",
-        "",
-        "REQ_PYTHON_VER=(3, 6)",
-        "REQ_MSTICPY_VER=(1, 2, 3)",
-        "REQ_MP_EXTRAS = ['keyvault']",
+        "%pip install --upgrade --quiet msticpy[azsentinel]",
         "",
         "display(HTML('<h3>Starting Notebook setup...</h3>'))",
-        "if Path('./utils/nb_check.py'):",
-        "    from utils.nb_check import check_versions",
-        "    check_versions(REQ_PYTHON_VER, REQ_MSTICPY_VER)",
-        "",
         "# intialize msticpy",
-        "from msticpy.nbtools import nbinit",
-        "nbinit.init_notebook(",
+        "try:",
+        "    from msticpy.nbtools import nbinit",
+        "    nbinit.init_notebook(",
         "    namespace=globals(),",
-        "    extra_imports=['urllib.request, urlretrieve']",
-        ")",
-        "pd.set_option('display.html.table_schema', False)"
+        "    extra_imports=[]",
+        "    )",
+        "except ImportError:",
+        "    print('MSTICPy not installed, please restart the kernel to ensure MSTICPy is installed.')"
       ],
-      "description": "Set up the execution environment for msticpy"
+      "description": "Set up the execution environment for MSTICPy"
     },
-  
-    "Sentinel - Authenticate into Azure resources": {
-      "prefix": ["azure-login"],
+
+    "Azure Sentinel - Authenticate with MSTICPy": {
+      "prefix": ["msticpy-azs-connect"],
       "body": [
-        "####################################################",
-        "# Sentinel - Authenticate into Azure resources     #",
-        "####################################################",
-        "# Azure CLI is used to get device code to login into Azure, you need to copy the code and open the DeviceLogin site.",
-        "!az login --use-device-code"
+        "##############################################",
+        "# Azure Sentinel - Authenticate with MSTICPy #",
+        "##############################################",
+        "",
+        "from msticpy.data.data_providers import QueryProvider",
+        "from msticpy.common.wsconfig import WorkspaceConfig",
+        "",
+        "ws_config = WorkspaceConfig()",
+        "if not ws_config.config_loaded:",
+            "ws_config.prompt_for_ws()",
+        "",
+        "qry_prov = QueryProvider(data_environment='AzureSentinel')",
+        "qry_prov.connect(ws_config)",
+        ""
       ],
-      "description": "Using AZCLI to login to Azure resources"
+      "description": "Load an Azure Sentinel query provider and connect to the default workspace with MSTICPy"
     },
-  
-    "Sentinel - Authenticate into Azure Log Analytics": {
+
+    "Azure Sentinel - Set up MSTICPy Pivots": {
+      "prefix": ["msticpy-azs-pivots"],
+      "body": [
+        "##########################################",
+        "# Azure Sentinel - Set up MSTICPy Pivots #",
+        "##########################################",
+        "",
+        "from msticpy.data.data_providers import QueryProvider",
+        "from msticpy.common.wsconfig import WorkspaceConfig",
+        "",
+        "ws_config = WorkspaceConfig()",
+        "if not ws_config.config_loaded:",
+            "ws_config.prompt_for_ws()",
+        "",
+        "qry_prov = QueryProvider(data_environment='AzureSentinel')",
+        "qry_prov.connect(ws_config)",
+        "",
+        "from msticpy.datamodel.pivot import Pivot",
+        "Pivot(namespace=globals())",
+        "Pivot.browse()"
+      ],
+      "description": "Set is MSTICPy Pivots to use Azure Sentinel"
+    },
+
+    "Azure Sentinel - Set up MSTICNb": {
+      "prefix": ["msticnb-setup"],
+      "body":[
+        "###################################",
+        "# Azure Sentinel - Set up MSTICNb #",
+        "###################################",
+        "from IPython.display import display, HTML",
+        "",
+        "display(HTML('Checking upgrade to latest msticnb version'))",
+        "%pip install --upgrade --quiet msticnb",
+        "",
+        "display(HTML('<h3>Starting Notebooklet setup...</h3>'))",
+        "# intialize msticnb",
+        "try:",
+        "    import msticnb as nb",
+        "    nb.init(query_provider='AzureSentinel')",
+        "    nb.browse()",
+        "except ImportError:",
+        "    print('MSTICNb not installed, please restart the kernel to ensure MSTICNb is installed.')",
+      ],
+      "description": "Install and load MSTICNb and display a browser showing avaliable notebooklets."
+    },
+
+    "Azure Sentinel - Authenticate into Azure Log Analytics": {
       "prefix": ["login-loganalytics"],
       "body": [
-        "####################################################",
-        "# Sentinel - Authenticate into Azure Log Analytics #",
-        "####################################################",
+        "########################################################",
+        "# Azure Sentinel - Authenticate to Azure Log Analytics #",
+        "########################################################",
         "# Azure CLI is used to get device code to login into Azure, you need to copy the code and open the DeviceLogin site.",
         "# !!! You need [tenant_id] and [subscription_id] to login into Azure !!!",
         "from azure.common.client_factory import get_client_from_cli_profile",
@@ -99,4 +149,3 @@
       "description": "Using AZCLI to login to Azure Log Analytics"
     }
   }
-  
