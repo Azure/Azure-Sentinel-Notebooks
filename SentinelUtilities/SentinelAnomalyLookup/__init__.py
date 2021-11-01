@@ -1,6 +1,6 @@
 # pylint: disable-msg=C0103
 """
-SentinelAnomalyLookup: This package is developed for Azure Sentinel Anomaly lookup
+SentinelAnomalyLookup: This package is developed for Microsoft Sentinel Anomaly lookup
 """
 
 # __init__.py

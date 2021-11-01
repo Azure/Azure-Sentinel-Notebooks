@@ -1,21 +1,21 @@
 
-# Azure Sentinel Notebooks
+# Microsoft Sentinel Notebooks
 
 Jupyter notebooks are an interactive development and data analysis
-environment hosted in a browser. The open API supported by Azure Sentinel
+environment hosted in a browser. The open API supported by Microsoft Sentinel
 allows you to use Jupyter notebooks to query, transform, analyze
-and visualize Azure Sentinel data. This makes notebooks a powerful
-addition to Azure Sentinel and is especially well-suited to ad-hoc
+and visualize Microsoft Sentinel data. This makes notebooks a powerful
+addition to Microsoft Sentinel and is especially well-suited to ad-hoc
 investigations, hunting or customized workflows.
 
 <img src="./images/network_graph.png"
 alt="Network Timeline" title="Msticpy Timeline Control" width="500" height="400" />
 
 More information on getting started with
-[Azure Sentinel and Azure Notebooks](https://docs.microsoft.com/en-us/azure/sentinel/notebooks)
+[Microsoft Sentinel and Azure Notebooks](https://docs.microsoft.com/en-us/azure/sentinel/notebooks)
 
 This repository contains notebooks contributed by Microsoft and the community
-to assist hunting and investigation tasks in Azure Sentinel.
+to assist hunting and investigation tasks in Microsoft Sentinel.
 
 The notebooks are mostly one of several types:
 
@@ -38,8 +38,8 @@ The notebooks are mostly one of several types:
 - [Configuring notebook environment](https://nbviewer.jupyter.org/github/Azure/Azure-Sentinel-Notebooks/blob/master/ConfiguringNotebookEnvironment.ipynb)
   notebook.
 - Run a demonstration notebook in [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Azure/Azure-Sentinel-Notebooks/master?filepath=nbdemo%2Fmsticpy%20demo.ipynb)
-- Read more about the use of Jupyter notebooks in Azure Sentinel on the
-  [Azure Sentinel Technical Community blog](https://techcommunity.microsoft.com/t5/azure-sentinel/bg-p/AzureSentinelBlog/label-name/Notebooks).
+- Read more about the use of Jupyter notebooks in Microsoft Sentinel on the
+  [Microsoft Sentinel Technical Community blog](https://techcommunity.microsoft.com/t5/azure-sentinel/bg-p/AzureSentinelBlog/label-name/Notebooks).
 - Read more about the [Azure ML Notebooks Service](https://docs.microsoft.com/en-us/azure/machine-learning/how-to-run-jupyter-notebooks).
 - Read more about [MSTICPy](https://msticpy.readthedocs.io/en/latest/index.html) - the CyberSecurity Python library that powers most of the notebooks
 

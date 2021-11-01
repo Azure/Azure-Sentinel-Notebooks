@@ -8,11 +8,11 @@ specific features of MSTICPy such as the process tree, shown below.
 <br>
 
 MSTICPy is the Python package that powers many of the CyberSec notebooks
-in Azure Sentinel.<br>
+in Microsoft Sentinel.<br>
 You can find out more details and documentation of
 these features on the [MSTICPy ReadTheDocs Site](https://msticpy.readthedocs.io).
 
-Many of the notebooks in this folder use local data so don't require an Azure Sentinel logon
+Many of the notebooks in this folder use local data so don't require a Microsoft Sentinel logon
 to run.
 
 ---
