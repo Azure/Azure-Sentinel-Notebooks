@@ -37,7 +37,7 @@ MP_INSTALL_FAILED = """
     <h4><font color='red'>The notebook may not run correctly without
     the correct version of '<b>{pkg}</b>' ({ver} or later).</font></h4>
     Please see the <a href="{nbk_uri}">
-    Getting Started Guide For Azure Sentinel ML Notebooks</a></b>
+    Getting Started Guide For Microsoft Sentinel ML Notebooks</a></b>
     for more information<br><hr>
 """
 RELOAD_MP = """
