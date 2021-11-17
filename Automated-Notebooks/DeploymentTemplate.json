@@ -54,15 +54,15 @@
       }
     },            
     "SentinelRG" :{
-        "type": "string",        
-        "metadata": {
-        "description": "The name of the Resource Group the Sentinel Workspace is in - change if RG is different from RG this VM is being deployed in"
+        "type": "string",
+      "metadata": {
+        "description": "The name of the Resource Group the Microsoft Sentinel Workspace is in - change if RG is different from RG this VM is being deployed in"
       }   
     },
     "SentinelSub" :{
       "type": "string",      
       "metadata": {
-      "description": "The ID of the subscription the Sentinel Workspace is in - change if RG is different from RG this VM is being deployed in"
+      "description": "The ID of the subscription the Microsoft Sentinel Workspace is in - change if RG is different from RG this VM is being deployed in"
     }   
     },
     "AzureMLSub" :{
@@ -78,8 +78,8 @@
       }   
     },
     "builtInRoleType1": {
-        "type": "string",
-        "defaultValue": "Azure Sentinel Responder"
+      "type": "string",
+      "defaultValue": "Microsoft Sentinel Responder"
     },    
     "builtInRoleType2": {
         "type": "string",
@@ -89,21 +89,21 @@
   "variables": {
     "rbac1Scope": "[concat('/subscriptions/', parameters('SentinelSub'), '/resourceGroups/', parameters('SentinelRG'))]",
     "rbac2Scope": "[concat('/subscriptions/', parameters('AzureMLSub'), '/resourceGroups/', parameters('AzureMLRG'))]",
-	"virtualNetworkName":"[concat(parameters('vmName'),'-VNET')]",
-	"subnetName":"[concat(parameters('vmName'),'-subnet')]",
+    "virtualNetworkName": "[concat(parameters('vmName'),'-VNET')]",
+    "subnetName": "[concat(parameters('vmName'),'-subnet')]",
     "vmResourceId": "[resourceId('Microsoft.Compute/virtualMachines/', parameters('vmName'))]",
     "Reader": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-    "Azure Sentinel Responder": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '3e150937-b8fe-4cfb-8069-0eaf05ecd056')]",
+    "Microsoft Sentinel Responder": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '3e150937-b8fe-4cfb-8069-0eaf05ecd056')]",
     "publicIpAddressName": "[concat(parameters('vmName'), 'PublicIP' )]",
     "networkInterfaceName": "[concat(parameters('vmName'),'NetInt')]",
     "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]",
     "osDiskType": "Standard_LRS",
     "subnetAddressPrefix": "10.1.0.0/24",
     "addressPrefix": "10.1.0.0/16",
-	"dnsLabelPrefix": "[toLower(concat('autonotebooks-', uniqueString(resourceGroup().id)))]",	
-	"networkSecurityGroupName":"[concat(parameters('vmName'),'-NSG')]",
-	"rbacGuid1":"[guid(subscription().subscriptionId, deployment().name)]",
-	"rbacGuid2":"[guid(resourceGroup().id, deployment().name)]",
+    "dnsLabelPrefix": "[toLower(concat('autonotebooks-', uniqueString(resourceGroup().id)))]",
+    "networkSecurityGroupName": "[concat(parameters('vmName'),'-NSG')]",
+    "rbacGuid1": "[guid(subscription().subscriptionId, deployment().name)]",
+    "rbacGuid2": "[guid(resourceGroup().id, deployment().name)]",
     "linuxConfiguration": {
       "disablePasswordAuthentication": true,
       "ssh": {
