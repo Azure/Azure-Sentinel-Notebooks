@@ -1,47 +1,48 @@
 
-# Azure Sentinel Notebooks
+# Microsoft Sentinel Notebooks
 
 Jupyter notebooks are an interactive development and data analysis
-environment hosted in a browser. The open API supported by Azure Sentinel
+environment hosted in a browser. The open API supported by Microsoft Sentinel
 allows you to use Jupyter notebooks to query, transform, analyze
-and visualize Azure Sentinel data. This makes notebooks a powerful
-addition to Azure Sentinel and is especially well-suited to ad-hoc
+and visualize Microsoft Sentinel data. This makes notebooks a powerful
+addition to Microsoft Sentinel and is especially well-suited to ad-hoc
 investigations, hunting or customized workflows.
 
 <img src="./images/network_graph.png"
 alt="Network Timeline" title="Msticpy Timeline Control" width="500" height="400" />
 
 More information on getting started with
-[Azure Sentinel and Azure Notebooks](https://docs.microsoft.com/en-us/azure/sentinel/notebooks)
+[Microsoft Sentinel and Azure Notebooks](https://docs.microsoft.com/en-us/azure/sentinel/notebooks)
 
 This repository contains notebooks contributed by Microsoft and the community
-to assist hunting and investigation tasks in Azure Sentinel.
+to assist hunting and investigation tasks in Microsoft Sentinel.
 
-The notebooks are mostly one of three types:
+The notebooks are mostly one of several types:
 
 - Exploration notebooks. These are meant to be used as they are or with
   your own customizations to explore specific hunting and investigation
   scenarios. Examples of this type include the Entity explorer series.
   (“Entity” refers to items such as hosts, IP addresses, accounts, URLs, etc.)
-- Simple How-To notebooks like the Get Started notebook.
+- Guided hunting and guided investigation notebooks that follow a specific
+  CyberSec scenario
+- How-To notebooks like the Get Started and ConfigureNotebookEnvironment notebooks.
 - Sample notebooks. These are longer and are meant to be instructional
-  examples following a real or simulated hunt or investigation.
+  examples following a real or simulated hunt or investigation. They typically
+  have save sample data so that you can see what they are meant to do.
 
-
-## Clone this repo to Azure notebooks
-
-[![Clone to Azure Notebooks](https://notebooks.azure.com/launch.png)](https://notebooks.azure.com/import/gh/Azure/Azure-Sentinel-Notebooks)
 
 ## More Information
 
-- Read the [Get Started](https://nbviewer.jupyter.org/github/Azure/Azure-Sentinel-Notebooks/blob/master/Get%20Started.ipynb)
+- [Getting Started](https://nbviewer.jupyter.org/github/Azure/Azure-Sentinel-Notebooks/blob/master/A%20Getting%20Started%20Guide%20For%20Azure%20Sentinel%20ML%20Notebooks.ipynb)
+  notebook.
+- [Configuring notebook environment](https://nbviewer.jupyter.org/github/Azure/Azure-Sentinel-Notebooks/blob/master/ConfiguringNotebookEnvironment.ipynb)
   notebook.
 - Run a demonstration notebook in [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Azure/Azure-Sentinel-Notebooks/master?filepath=nbdemo%2Fmsticpy%20demo.ipynb)
-- Read more about the use of Jupter notebooks in Azure Sentinel on the 
-  [Azure Sentinel Technical Community blog](https://techcommunity.microsoft.com/t5/Azure-Sentinel/bg-p/AzureSentinelBlog)
-- Read more about the [Azure Notebooks Service](https://docs.microsoft.com/en-us/azure/notebooks/).
-- View sample notebooks in the [Sample-Notebooks](https://github.com/Azure/Azure-Sentinel-Notebooks/tree/master/Sample-Notebooks) folder
-- View How-tos and Troubleshooting in the [HowTos](https://github.com/Azure/Azure-Sentinel-Notebooks/tree/master/HowTos) folder
+- Read more about the use of Jupyter notebooks in Microsoft Sentinel on the
+  [Microsoft Sentinel Technical Community blog](https://techcommunity.microsoft.com/t5/azure-sentinel/bg-p/AzureSentinelBlog/label-name/Notebooks).
+- Read more about the [Azure ML Notebooks Service](https://docs.microsoft.com/en-us/azure/machine-learning/how-to-run-jupyter-notebooks).
+- Read more about [MSTICPy](https://msticpy.readthedocs.io/en/latest/index.html) - the CyberSecurity Python library that powers most of the notebooks
+
 
 ## Feedback
 

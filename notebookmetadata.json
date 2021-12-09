@@ -1,58 +1,106 @@
- [
-    {
-        "id": "AnomalyLookup",
-        "lastRevisedDate": "2020-09-28"
-    },
-    {
-        "id": "Office365Exploring",
-        "lastRevisedDate": "2020-06-26"
-    },
-    {
-        "id": "ProcessAlert",
-        "lastRevisedDate": "2020-06-26"
-    },
-    {
-        "id": "WindowsHostExplorer",
-        "lastRevisedDate": "2020-09-11"
-    },
-    {
-        "id": "AccountExplorer",
-        "lastRevisedDate": "2020-09-08"
-    },
-    {
-        "id": "DomainExplorer",
-        "lastRevisedDate": "2020-06-26"
-    },
-    {
-        "id": "IPExplorer",
-        "lastRevisedDate": "2020-09-29"
-    },
-    {
-        "id": "LinuxExplorer",
-        "lastRevisedDate": "2020-09-22"
-    },
-    {
-        "id": "Covid19",
-        "lastRevisedDate": "2020-07-24"
-    },
-    {
-        "id": "AlertTriage",
-        "lastRevisedDate": "2020-09-03"
-    },
-    {
-        "id": "GettingStarted",
-        "lastRevisedDate": "2020-08-11"
-    },
-    {
-        "id": "MDATP",
-        "lastRevisedDate": "2020-09-09"
-    },
-    {
-        "id": "Exchange",
-        "lastRevisedDate": "2020-09-09"
-    },
-    {
-        "id": "PowerShell",
-        "lastRevisedDate": "2020-09-28"
-    },
+[
+  {
+    "id": "AnomalyLookup",
+    "lastRevisedDate": "2021-09-23"
+  },
+  {
+    "id": "Office365Exploring",
+    "lastRevisedDate": "2021-04-27"
+  },
+  {
+    "id": "ProcessAlert",
+    "lastRevisedDate": "2021-04-27"
+  },
+  {
+    "id": "WindowsHostExplorer",
+    "lastRevisedDate": "2021-04-27"
+  },
+  {
+    "id": "AccountExplorer",
+    "lastRevisedDate": "2021-04-27"
+  },
+  {
+    "id": "DomainExplorer",
+    "lastRevisedDate": "2021-04-27"
+  },
+  {
+    "id": "IPExplorer",
+    "lastRevisedDate": "2021-04-27"
+  },
+  {
+    "id": "LinuxExplorer",
+    "lastRevisedDate": "2021-04-27"
+  },
+  {
+    "id": "Covid19",
+    "lastRevisedDate": "2021-04-27"
+  },
+  {
+    "id": "AlertTriage",
+    "lastRevisedDate": "2021-04-27"
+  },
+  {
+    "id": "GettingStarted",
+    "lastRevisedDate": "2021-10-07"
+  },
+  {
+    "id": "MDATP",
+    "lastRevisedDate": "2021-04-27"
+  },
+  {
+    "id": "Exchange",
+    "lastRevisedDate": "2021-04-27"
+  },
+  {
+    "id": "PowerShell",
+    "lastRevisedDate": "2021-04-27"
+  },
+  {
+    "id": "MLExamples",
+    "lastRevisedDate": "2021-04-27"
+  },
+  {
+    "id": "Solarwinds",
+    "lastRevisedDate": "2021-04-27"
+  },
+  {
+    "id": "HandsOnAPI",
+    "lastRevisedDate": "2021-09-23"
+  },
+  {
+    "id": "HandsOnSDK",
+    "lastRevisedDate": "2021-09-23"
+  },
+  {
+    "id": "ConfigEnv",
+    "lastRevisedDate": "2021-04-27"
+  },
+  {
+    "id": "CredScanBlob",
+    "lastRevisedDate": "2021-09-23"
+  },
+  {
+    "id": "CredScanADX",
+    "lastRevisedDate": "2021-09-23"
+  },
+  {
+    "id": "CredScanLA",
+    "lastRevisedDate": "2021-09-23"
+  },
+  {
+    "id": "Tour",
+    "lastRevisedDate": "2021-09-15"
+  },
+  {
+    "id": "LinuxCommands",
+    "lastRevisedDate": "2021-06-02"
+  },
+  {
+    "id": "SynapseSetup",
+    "lastRevisedDate": "2021-10-07"
+  },
+  {
+    "id": "SynapseNetwork",
+    "lastRevisedDate": "2021-10-07"
+  }
 ]

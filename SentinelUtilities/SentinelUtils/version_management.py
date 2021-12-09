@@ -6,7 +6,7 @@
 """
 Version Management:
 This module is used to validate installed Python packages
-that are required by Azure Sentinel Notebooks.
+that are required by Microsoft Sentinel Notebooks.
 """
 
 import sys
