@@ -5,9 +5,11 @@ QueryDefinitions:
 AzureSentinel:
   Workspaces:
     # # Add your default workspace and tenant here (uncomment next 3 lines)
-    # Default:
-    #   WorkspaceId: your-workspace-id
-    #   TenantId: your-tenant-id
+    Default:
+       WorkspaceId: "8ecf8077-cf51-4820-aadd-14040956f35d"
+       #WorkspaceId: "8ecf8077-cf51-4820-aadd-14040956f35d"
+       #TenantId: "4b2462a4-bbee-495a-a0e1-f23ae524cc9c"
+       TenantId: "72f988bf-86f1-41af-91ab-2d7cd011db47"
     # # Add additional named workspaces here - you can use these in the notebook
     # # with the syntax ws_config = WorkspaceConfig(workspace="WorkspaceAlpha")
     # # Each section must have a unique name. You can have any number of 
@@ -22,11 +24,11 @@ TIProviders:
   # # (e.g. XForce requires an ApiID key as well). The "AuthKey" name
   # # will be mapped onto the name used by the service, you should not
   # # to change this - e.g. some providers call this ApiKey. 
-  # OTX:
-  #   Args:
-  #     AuthKey: OTX-API-Key
-  #   Primary: True
-  #   Provider: "OTX"
+   OTX:
+     Args:
+       AuthKey: "be062f0a69fc7732acaf5eb6e95d55c125b7f0ecc1d349cb28d4a715d67782e9"
+     Primary: True
+     Provider: "OTX"
   # VirusTotal:
   #   Args:
   #     AuthKey: VT-API-Key
