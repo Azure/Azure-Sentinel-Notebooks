@@ -33,15 +33,16 @@ Notes
 
 If CMD is 'update' you must specify a kernelspec target. The updated
 notebook is written to the same name as the input. The old version is
-saved as {input-notebook-name}.{previous-kernelspec-name}
-If CMD is 'view', target is optional and it reports any notebooks
-with kernelspecs different to internal kernelspecs (view with 'list' command)
+saved as {input-notebook-name}.{previous-kernelspec-name}.pynb
+If CMD is 'check', target is optional and it reports any notebooks
+with kernelspecs different to internal kernelspecs
+(you can view the built-in kernelspecs with 'list' command)
 as errors.
 
 """
 import argparse
 from pathlib import Path
-from typing import Optional, Iterable
+from typing import Iterable, List
 import sys
 
 import nbformat
@@ -63,8 +64,15 @@ IP_KERNEL_SPEC = {
         "name": "python38-azureml",
         "language": "python",
         "display_name": "Python 3.8 - AzureML"
-    }
+    },
+    'papermill': {'display_name': 'papermill', 'language': 'python', 'name': 'papermill'},
+    '.net-csharp': 
+   {'display_name': '.NET (C#)', 'language': 'C#', 'name': '.net-csharp'},
+   '.net-powershell':
+   {'display_name': '.NET (PowerShell)', 'language': 'PowerShell', 'name': '.net-powershell'},
 }
+
+_LEGAL_KERNELS = ["azureml_36", "azureml_38", "papermill", ".net-csharp", ".net-powershell", "python3"]
 
 
 def check_notebooks(nb_path: str, k_tgts: Iterable[str], verbose: bool = False):
@@ -74,7 +82,12 @@ def check_notebooks(nb_path: str, k_tgts: Iterable[str], verbose: bool = False):
     for nbook in _get_notebook_paths(nb_path):
         if ".ipynb_checkpoints" in str(nbook):
             continue
-        nb_obj = nbformat.read(str(nbook), as_version=4.0)
+        try:
+        	nb_obj = nbformat.read(str(nbook), as_version=4.0)
+        except nbformat.reader.NotJSONError as err:
+        	print(f"Error reading {nbook}\n{err}")
+        	err_count += 1
+        	continue
         kernelspec = nb_obj.get("metadata", {}).get("kernelspec", None)
         if not kernelspec:
             print("Error: no kernel information.")
@@ -97,7 +110,8 @@ def check_notebooks(nb_path: str, k_tgts: Iterable[str], verbose: bool = False):
             _print_nb_header(nbook)
             print(f"{kernelspec['name']} ok\n")
         good_count += 1
-    print(f"{good_count} with no errors, {err_count} with errors")
+    print(f"{good_count} notebooks with no errors, {err_count} with errors")
+    return good_count, err_count
 
 
 def _get_notebook_paths(nb_path: str):
@@ -147,14 +161,17 @@ def set_kernelspec(nb_path: str, k_tgt: str, verbose: bool = False):
                 "'"
             )
             print("  ", kernelspec, "\n")
-            nbook.rename(f"{str(nbook)}.{current_kspec_name}")
+            backup_path = (
+                f"{str(nbook).strip(nbook.suffix)}-{current_kspec_name}{nbook.suffix}"
+            )
+            nbook.rename(backup_path)
             nbformat.write(nb_obj, str(nbook))
             continue
         if verbose:
             _print_nb_header(nbook)
             print(f"{kernelspec['name']} ok\n")
         good_count += 1
-    print(f"{good_count} with no changes, {changed_count} updated")
+    print(f"{good_count} notebooks with no changes, {changed_count} updated")
 
 
 def _add_script_args():
@@ -166,7 +183,7 @@ def _add_script_args():
         "--path", "-p", default=".", required=False, help="Path search for notebooks."
     )
     parser.add_argument(
-        "--target", "-t", required=False, help="Target kernel spec to check or set."
+        "--target", "-t", nargs="+", required=False, help="Target kernel spec(s) to check or set."
     )
     parser.add_argument(
         "--verbose",
@@ -193,28 +210,34 @@ if __name__ == "__main__":
         _view_targets()
         sys.exit(0)
 
-    krnl_tgt: Optional[str] = None
+    krnl_tgts: List[str] = []
     if args.target:
-        krnl_tgt = args.target
-        if krnl_tgt not in IP_KERNEL_SPEC:
-            print("'target' must be a valid kernelspec definition")
-            print("Valid kernel specs:")
-            _view_targets()
-            sys.exit(1)
+        krnl_tgts = args.target
+        for krnl_tgt in krnl_tgts:
+            if krnl_tgt not in IP_KERNEL_SPEC:
+                print("'target' must be a valid kernelspec definition")
+                print("Valid kernel specs:")
+                _view_targets()
+                sys.exit(1)
 
-    if krnl_tgt is not None:
-        krnl_tgts = [krnl_tgt]
-    else:
-        krnl_tgts = list(IP_KERNEL_SPEC.keys())
+    krnl_tgts = krnl_tgts or _LEGAL_KERNELS
 
     if not args.path:
         print("check and update commands need a 'path' parameter.")
         sys.exit(1)
     if args.cmd == "check":
-        check_notebooks(args.path, krnl_tgts, verbose=args.verbose)
+        ok_count, err_count = check_notebooks(args.path, krnl_tgts, verbose=args.verbose)
+        if err_count:
+            sys.exit(1)
         sys.exit(0)
 
     if args.cmd == "update":
+        if len(krnl_tgts) > 1:
+            print(
+                "Multiple targets specified for update.",
+                f"Using first value {krnl_tgts[0]}"
+            )
+        krnl_tgt = krnl_tgts[0]
         if not krnl_tgt:
             print("A kernel target must be specified with 'update'.")
             sys.exit(1)
