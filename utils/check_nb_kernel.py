@@ -82,7 +82,12 @@ def check_notebooks(nb_path: str, k_tgts: Iterable[str], verbose: bool = False):
     for nbook in _get_notebook_paths(nb_path):
         if ".ipynb_checkpoints" in str(nbook):
             continue
-        nb_obj = nbformat.read(str(nbook), as_version=4.0)
+        try:
+        	nb_obj = nbformat.read(str(nbook), as_version=4.0)
+        except nbformat.reader.NotJSONError as err:
+        	print(f"Error reading {nbook}\n{err}")
+        	err_count += 1
+        	continue
         kernelspec = nb_obj.get("metadata", {}).get("kernelspec", None)
         if not kernelspec:
             print("Error: no kernel information.")

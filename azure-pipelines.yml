@@ -1,4 +1,4 @@
-# Build/CI checker for Azure Sentinel Notebooks
+# Build/CI checker for Microsoft Sentinel Notebooks
 
 trigger:
 - master
@@ -60,6 +60,12 @@ jobs:
         jupyter nbconvert $nbconver_opts --execute "$tour_nb"
       fi
     displayName: AutorunNotebooks
+#  - task: Npm@1
+#    displayName: 'npm install'
+#    inputs:
+#      verbose: false
+#  - script: 'npm run tsc && node .script/documentsLinkValidator.js'
+#    displayName: 'Documents links locale validation'
 - job: SecurityChecks
   displayName: Python install and test Notebooks
   pool:

@@ -46,7 +46,7 @@ TIProviders:
     Provider: "XForce"
   AzureSentinel:
     # Note this can be a different workspace/tenant from your main workspace
-    # This only controls where the Azure Sentinel TI provider looks for the 
+    # This only controls where the Microsoft Sentinel TI provider looks for the 
     # ThreatIndicator table.
     Args:
       WorkspaceID: "c88dd3c2-d657-4eb3-b913-58d58d811a41"
