@@ -39,7 +39,7 @@ TIProviders:
   #   Primary: True
   #   Provider: "XForce"
   # AzureSentinel:
-  #  # The Azure sentinel TI data can be in a different workspace
+  #  # The Microsoft sentinel TI data can be in a different workspace
   #  # to the workspace where your data is. If it is different,
   #  # both workspaces must be in the same tenant. This is a limitation
   #  # of the Log Analytics client library.
