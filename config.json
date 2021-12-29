@@ -1,7 +1,7 @@
 {
-  "tenant_id": "4b2462a4-bbee-495a-a0e1-f23ae524cc9c",
-  "subscription_id": "d1d8779d-38d7-4f06-91db-9cbc8de0176f",
-  "resource_group": "soc",
-  "workspace_id": "8ecf8077-cf51-4820-aadd-14040956f35d",
-  "workspace_name": "CyberSecuritySOC"
+  "tenant_id": "{{cookiecutter.tenant_id}}",
+  "subscription_id": "{{cookiecutter.subscription_id}}",
+  "resource_group": "{{cookiecutter.resource_group}}",
+  "workspace_id": "{{cookiecutter.workspace_id}}",
+  "workspace_name": "{{cookiecutter.workspace_name}}"
 }
