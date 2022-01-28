@@ -62,7 +62,7 @@ jobs:
   - script: |
       logfile=url_with_locales.log
       locale_match="(docs.microsoft.com|azure.microsoft.com)(\/[a-z]{2}-[a-z]{2})"
-      grep --directories=recurse -E -n --exclude=*.pkl  $locale_match * > $logfile
+      grep --directories=recurse -E -n --exclude=*.pkl  --exclude=*.log $locale_match * > $logfile
       if [ -s $logfile ]
       then
         echo Locale-specific URLS found in one or more files.
