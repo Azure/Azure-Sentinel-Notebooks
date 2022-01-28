@@ -45,7 +45,6 @@ jobs:
   - script: |
       python -m utils.check_nb_kernel check  -p "*.ipynb"
     displayName: 'Kernelspec check'
-
   - script: |
       python -m pip install nbconvert
       python -m pip install jupyter_contrib_nbextensions
@@ -60,12 +59,19 @@ jobs:
         jupyter nbconvert $nbconver_opts --execute "$tour_nb"
       fi
     displayName: AutorunNotebooks
-#  - task: Npm@1
-#    displayName: 'npm install'
-#    inputs:
-#      verbose: false
-#  - script: 'npm run tsc && node .script/documentsLinkValidator.js'
-#    displayName: 'Documents links locale validation'
+  - script: |
+      logfile=url_with_locales.log
+      locale_match="(docs.microsoft.com|azure.microsoft.com)(\/[a-z]{2}-[a-z]{2})"
+      grep --directories=recurse -E -n --exclude=*.pkl  $locale_match * > $logfile
+      if [ -s $logfile ]
+      then
+        echo Locale-specific URLS found in one or more files.
+        echo Please replace with locale-agnostic versions
+        cat $logfile
+        exit 1
+      fi
+    displayName: 'URL Locale check'
+
 - job: SecurityChecks
   displayName: Python install and test Notebooks
   pool:
