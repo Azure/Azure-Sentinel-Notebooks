@@ -72,7 +72,7 @@ IP_KERNEL_SPEC = {
    {'display_name': '.NET (PowerShell)', 'language': 'PowerShell', 'name': '.net-powershell'},
 }
 
-_LEGAL_KERNELS = ["azureml_36", "azureml_38", "papermill", ".net-csharp", ".net-powershell", "python3"]
+_LEGAL_KERNELS = ["azureml_38", "papermill", ".net-csharp", ".net-powershell", "azureml_36"]
 
 
 def check_notebooks(nb_path: str, k_tgts: Iterable[str], verbose: bool = False):
