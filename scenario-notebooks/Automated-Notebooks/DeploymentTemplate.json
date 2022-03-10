@@ -1,0 +1,325 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vmName": {
+      "type": "string",
+      "defaultValue": "autonotebook",
+      "metadata": {
+        "description": "The name of your Virtual Machine used to execute notebooks."
+      }
+    },
+    "adminUsername": {
+      "type": "string",
+      "defaultValue" : "azureuser",
+      "metadata": {
+        "description": "Username for the Virtual Machine."
+      }
+    },
+    "authenticationType": {
+      "type": "string",   
+	  "defaultValue" : "sshPublicKey",	  
+      "allowedValues": [
+        "sshPublicKey",
+        "password"
+      ],
+      "metadata": {
+        "description": "Type of authentication to use on the Virtual Machine. SSH key is recommended."
+      }
+    },
+    "adminPasswordOrKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "SSH Key or password for the Virtual Machine. SSH key is recommended."
+      }
+    },    
+    "ubuntuOSVersion": {
+      "type": "string",
+      "defaultValue": "18.04-LTS",
+      "allowedValues": [
+        "12.04.5-LTS",
+        "14.04.5-LTS",
+        "16.04.0-LTS",
+        "18.04-LTS"
+      ],
+      "metadata": {
+        "description": "The Ubuntu version for the VM. This will pick a fully patched image of this given Ubuntu version."
+      }
+    },    
+    "VmSize": {
+      "type": "string",
+      "defaultValue": "Standard_B2s",
+      "metadata": {
+        "description": "The size of the VM"
+      }
+    },            
+    "SentinelRG" :{
+        "type": "string",
+      "metadata": {
+        "description": "The name of the Resource Group the Microsoft Sentinel Workspace is in - change if RG is different from RG this VM is being deployed in"
+      }   
+    },
+    "SentinelSub" :{
+      "type": "string",      
+      "metadata": {
+      "description": "The ID of the subscription the Microsoft Sentinel Workspace is in - change if RG is different from RG this VM is being deployed in"
+    }   
+    },
+    "AzureMLSub" :{
+      "type": "string",      
+      "metadata": {
+      "description": "The ID of the subscription the Azure ML Workspace is in - change if RG is different from RG this VM is being deployed in"
+    }   
+    },
+    "AzureMLRG" :{
+        "type": "string",        
+        "metadata": {
+        "description": "The name of the Resource Group the Azure ML Workspace is in - change if RG is different from RG this VM is being deployed in"
+      }   
+    },
+    "builtInRoleType1": {
+      "type": "string",
+      "defaultValue": "Microsoft Sentinel Responder"
+    },    
+    "builtInRoleType2": {
+        "type": "string",
+        "defaultValue": "Reader"
+    }    
+  },
+  "variables": {
+    "rbac1Scope": "[concat('/subscriptions/', parameters('SentinelSub'), '/resourceGroups/', parameters('SentinelRG'))]",
+    "rbac2Scope": "[concat('/subscriptions/', parameters('AzureMLSub'), '/resourceGroups/', parameters('AzureMLRG'))]",
+    "virtualNetworkName": "[concat(parameters('vmName'),'-VNET')]",
+    "subnetName": "[concat(parameters('vmName'),'-subnet')]",
+    "vmResourceId": "[resourceId('Microsoft.Compute/virtualMachines/', parameters('vmName'))]",
+    "Reader": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+    "Microsoft Sentinel Responder": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '3e150937-b8fe-4cfb-8069-0eaf05ecd056')]",
+    "publicIpAddressName": "[concat(parameters('vmName'), 'PublicIP' )]",
+    "networkInterfaceName": "[concat(parameters('vmName'),'NetInt')]",
+    "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]",
+    "osDiskType": "Standard_LRS",
+    "subnetAddressPrefix": "10.1.0.0/24",
+    "addressPrefix": "10.1.0.0/16",
+    "dnsLabelPrefix": "[toLower(concat('autonotebooks-', uniqueString(resourceGroup().id)))]",
+    "networkSecurityGroupName": "[concat(parameters('vmName'),'-NSG')]",
+    "rbacGuid1": "[guid(subscription().subscriptionId, deployment().name)]",
+    "rbacGuid2": "[guid(resourceGroup().id, deployment().name)]",
+    "linuxConfiguration": {
+      "disablePasswordAuthentication": true,
+      "ssh": {
+        "publicKeys": [
+          {
+            "path": "[concat('/home/', parameters('adminUsername'), '/.ssh/authorized_keys')]",
+            "keyData": "[parameters('adminPasswordOrKey')]"
+          }
+        ]
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2020-06-01",
+      "name": "[variables('networkInterfaceName')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkSecurityGroups/', variables('networkSecurityGroupName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
+        "[resourceId('Microsoft.Network/publicIpAddresses/', variables('publicIpAddressName'))]"
+      ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "subnet": {
+                "id": "[variables('subnetRef')]"
+              },
+              "privateIPAllocationMethod": "Dynamic",
+              "publicIpAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
+              }
+            }
+          }
+        ],
+        "networkSecurityGroup": {
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups',variables('networkSecurityGroupName'))]"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2020-06-01",
+      "name": "[variables('networkSecurityGroupName')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "SSH",
+            "properties": {
+              "priority": 1000,
+              "protocol": "TCP",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourceAddressPrefix": "*",
+              "sourcePortRange": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "22"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2020-06-01",
+      "name": "[variables('virtualNetworkName')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[variables('addressPrefix')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "[variables('subnetName')]",
+            "properties": {
+              "addressPrefix": "[variables('subnetAddressPrefix')]",
+              "privateEndpointNetworkPolicies": "Enabled",
+              "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/publicIpAddresses",
+      "apiVersion": "2020-06-01",
+      "name": "[variables('publicIpAddressName')]",
+      "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "Basic",
+        "tier": "Regional"
+      },
+      "properties": {
+        "publicIpAllocationMethod": "Dynamic",
+        "publicIPAddressVersion": "IPv4",
+        "dnsSettings": {
+          "domainNameLabel": "[variables('dnsLabelPrefix')]"
+        },
+        "idleTimeoutInMinutes": 4
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2020-06-01",
+      "name": "[parameters('vmName')]",
+      "location": "[resourceGroup().location]",
+      "identity": {
+             "type": "SystemAssigned"
+             },                        
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkInterfaces/', variables('networkInterfaceName'))]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[parameters('VmSize')]"
+        },
+        "storageProfile": {
+          "osDisk": {
+            "createOption": "fromImage",
+            "managedDisk": {
+              "storageAccountType": "[variables('osDiskType')]"
+            }
+          },
+          "imageReference": {
+            "publisher": "Canonical",
+            "offer": "UbuntuServer",
+            "sku": "[parameters('ubuntuOSVersion')]",
+            "version": "latest"
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaceName'))]"
+            }
+          ]
+        },
+        "osProfile": {
+          "computerName": "[parameters('vmName')]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPasswordOrKey')]",
+          "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
+        }
+      }
+    },
+    {
+      "apiVersion": "2020-10-01",
+      "name": "assignRole",
+      "type": "Microsoft.Resources/deployments",
+      "subscriptionId": "[parameters('SentinelSub')]",
+      "resourceGroup": "[parameters('SentinelRG')]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [
+            {
+              "name": "[guid(variables('rbacGuid1'))]",
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2017-09-01",
+              "properties": {
+                "roleDefinitionId": "[variables(parameters('builtInRoleType1'))]",
+                "principalId": "[reference(variables('vmResourceId'), '2017-12-01', 'Full').identity.principalId]",
+                "scope": ""
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "apiVersion": "2020-10-01",
+      "name": "assignRole2",
+      "type": "Microsoft.Resources/deployments",
+      "subscriptionId": "[parameters('AzureMLSub')]",
+      "resourceGroup": "[parameters('AzureMLRG')]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [
+            {
+              "name": "[guid(variables('rbacGuid2'))]",
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2017-09-01",
+              "properties": {
+                "roleDefinitionId": "[variables(parameters('builtInRoleType2'))]",
+                "principalId": "[reference(variables('vmResourceId'), '2017-12-01', 'Full').identity.principalId]",
+                "scope": ""
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "adminUsername": {
+      "type": "string",
+      "value": "[parameters('adminUsername')]"
+    },
+    "hostname": {
+      "type": "string",
+      "value": "[reference(variables('publicIPAddressName')).dnsSettings.fqdn]"
+    },
+    "sshCommand": {
+      "type": "string",
+      "value": "[concat('ssh ', parameters('adminUsername'), '@', reference(variables('publicIPAddressName')).dnsSettings.fqdn)]"
+    }	
+  }
+}
