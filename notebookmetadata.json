@@ -61,11 +61,11 @@
   },
   {
     "id": "Solarwinds",
-    "lastRevisedDate": "2022-02-18"
+    "lastRevisedDate": "2022-05-05"
   },
   {
     "id": "HandsOnAPI",
-    "lastRevisedDate": "2021-11-03"
+    "lastRevisedDate": "2022-05-05"
   },
   {
     "id": "HandsOnSDK",
@@ -77,11 +77,11 @@
   },
   {
     "id": "CredScanBlob",
-    "lastRevisedDate": "2021-11-03"
+    "lastRevisedDate": "2022-05-05"
   },
   {
     "id": "CredScanADX",
-    "lastRevisedDate": "2022-01-28"
+    "lastRevisedDate": "2022-05-05"
   },
   {
     "id": "CredScanLA",
@@ -97,10 +97,10 @@
   },
   {
     "id": "SynapseSetup",
-    "lastRevisedDate": "2021-10-07"
+    "lastRevisedDate": "2022-05-05"
   },
   {
     "id": "SynapseNetwork",
-    "lastRevisedDate": "2021-10-07"
+    "lastRevisedDate": "2022-05-05"
   }
 ]
