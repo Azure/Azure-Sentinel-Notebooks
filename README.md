@@ -35,14 +35,14 @@ This contains notebooks designed for use by you in Microsoft Sentinel.
 Some of these are intended to illustrate specific techniques or investigation
 approaches
 
-<h4><a href="./tutorial-and-examples">tutorials-and-examples</a></h4>
+<h4><a href="./tutorials-and-examples">tutorials-and-examples</a></h4>
 
-- [example-notebooks](./example-notebooks) Examples of techniques or features
-- [feature-tutorials](./feature-tutorials) MSTICPy feature tutorial notebooks
-- [how-tos](./how-tos) Articles and notebooks illustrating specific techniques
-- [other-language-kernels](./other-language-kernels) Notebooks using alternative kernels
-- [training-notebooks](./training-notebooks) Notebooks used in training webinars
-- [deprecated-notebooks](./deprecated-notebooks) Older, deprecated notebooks
+- [example-notebooks](./tutorials-and-examples/example-notebooks) Examples of techniques or features
+- [feature-tutorials](./tutorials-and-examples/feature-tutorials) MSTICPy feature tutorial notebooks
+- [how-tos](./tutorials-and-examples/how-tos) Articles and notebooks illustrating specific techniques
+- [other-language-kernels](./tutorials-and-examples/other-language-kernels) Notebooks using alternative kernels
+- [training-notebooks](./tutorials-and-examples/training-notebooks) Notebooks used in training webinars
+- [deprecated-notebooks](./tutorials-and-examples/deprecated-notebooks) Older, deprecated notebooks
 
 There are also support folders - source and utils
 
