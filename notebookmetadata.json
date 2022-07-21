@@ -1,7 +1,7 @@
 [
   {
     "id": "AnomalyLookup",
-    "lastRevisedDate": "2021-09-23"
+    "lastRevisedDate": "2022-05-12"
   },
   {
     "id": "Office365Exploring",
@@ -9,39 +9,39 @@
   },
   {
     "id": "ProcessAlert",
-    "lastRevisedDate": "2021-04-27"
+    "lastRevisedDate": "2022-02-18"
   },
   {
     "id": "WindowsHostExplorer",
-    "lastRevisedDate": "2021-04-27"
+    "lastRevisedDate": "2022-02-18"
   },
   {
     "id": "AccountExplorer",
-    "lastRevisedDate": "2021-04-27"
+    "lastRevisedDate": "2022-02-18"
   },
   {
     "id": "DomainExplorer",
-    "lastRevisedDate": "2021-04-27"
+    "lastRevisedDate": "2022-02-18"
   },
   {
     "id": "IPExplorer",
-    "lastRevisedDate": "2021-04-27"
+    "lastRevisedDate": "2022-03-10"
   },
   {
     "id": "LinuxExplorer",
-    "lastRevisedDate": "2021-04-27"
+    "lastRevisedDate": "2022-02-18"
   },
   {
     "id": "Covid19",
-    "lastRevisedDate": "2021-04-27"
+    "lastRevisedDate": "2022-02-18"
   },
   {
     "id": "AlertTriage",
-    "lastRevisedDate": "2021-04-27"
+    "lastRevisedDate": "2022-02-18"
   },
   {
     "id": "GettingStarted",
-    "lastRevisedDate": "2021-10-07"
+    "lastRevisedDate": "2022-01-28"
   },
   {
     "id": "MDATP",
@@ -49,58 +49,58 @@
   },
   {
     "id": "Exchange",
-    "lastRevisedDate": "2021-04-27"
+    "lastRevisedDate": "2022-02-18"
   },
   {
     "id": "PowerShell",
-    "lastRevisedDate": "2021-04-27"
+    "lastRevisedDate": "2022-01-28"
   },
   {
     "id": "MLExamples",
-    "lastRevisedDate": "2021-04-27"
+    "lastRevisedDate": "2022-03-10"
   },
   {
     "id": "Solarwinds",
-    "lastRevisedDate": "2021-04-27"
+    "lastRevisedDate": "2022-05-05"
   },
   {
     "id": "HandsOnAPI",
-    "lastRevisedDate": "2021-09-23"
+    "lastRevisedDate": "2022-05-05"
   },
   {
     "id": "HandsOnSDK",
-    "lastRevisedDate": "2021-09-23"
+    "lastRevisedDate": "2022-05-12"
   },
   {
     "id": "ConfigEnv",
-    "lastRevisedDate": "2021-04-27"
+    "lastRevisedDate": "2022-03-10"
   },
   {
     "id": "CredScanBlob",
-    "lastRevisedDate": "2021-09-23"
+    "lastRevisedDate": "2022-05-05"
   },
   {
     "id": "CredScanADX",
-    "lastRevisedDate": "2021-09-23"
+    "lastRevisedDate": "2022-05-16"
   },
   {
     "id": "CredScanLA",
-    "lastRevisedDate": "2021-09-23"
+    "lastRevisedDate": "2022-05-12"
   },
   {
     "id": "Tour",
-    "lastRevisedDate": "2021-09-15"
+    "lastRevisedDate": "2022-03-10"
   },
   {
     "id": "LinuxCommands",
-    "lastRevisedDate": "2021-06-02"
+    "lastRevisedDate": "2022-02-18"
   },
   {
     "id": "SynapseSetup",
-    "lastRevisedDate": "2021-10-07"
+    "lastRevisedDate": "2022-05-05"
   },
   {
     "id": "SynapseNetwork",
-    "lastRevisedDate": "2021-10-07"
+    "lastRevisedDate": "2022-05-05"
   }
 ]
