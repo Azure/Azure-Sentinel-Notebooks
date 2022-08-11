@@ -1,7 +1,7 @@
 [
   {
     "id": "AnomalyLookup",
-    "lastRevisedDate": "2022-05-12"
+    "lastRevisedDate": "2022-08-04"
   },
   {
     "id": "Office365Exploring",
@@ -41,7 +41,7 @@
   },
   {
     "id": "GettingStarted",
-    "lastRevisedDate": "2022-07-01"
+    "lastRevisedDate": "2022-07-21"
   },
   {
     "id": "MDATP",
@@ -65,7 +65,7 @@
   },
   {
     "id": "HandsOnAPI",
-    "lastRevisedDate": "2022-05-05"
+    "lastRevisedDate": "2022-08-04"
   },
   {
     "id": "HandsOnSDK",
@@ -77,15 +77,15 @@
   },
   {
     "id": "CredScanBlob",
-    "lastRevisedDate": "2022-05-05"
+    "lastRevisedDate": "2022-08-04"
   },
   {
     "id": "CredScanADX",
-    "lastRevisedDate": "2022-05-16"
+    "lastRevisedDate": "2022-08-04"
   },
   {
     "id": "CredScanLA",
-    "lastRevisedDate": "2022-05-12"
+    "lastRevisedDate": "2022-08-04"
   },
   {
     "id": "Tour",
@@ -102,5 +102,9 @@
   {
     "id": "SynapseNetwork",
     "lastRevisedDate": "2022-05-05"
+  },
+  {
+    "id": "MaliciousLinksInTeams",
+    "lastRevisedDate": "2022-05-09"
   }
 ]
