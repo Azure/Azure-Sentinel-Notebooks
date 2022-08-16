@@ -1,7 +1,7 @@
 [
   {
     "id": "AnomalyLookup",
-    "lastRevisedDate": "2022-05-12"
+    "lastRevisedDate": "2022-08-04"
   },
   {
     "id": "Office365Exploring",
@@ -17,7 +17,8 @@
   },
   {
     "id": "AccountExplorer",
-    "lastRevisedDate": "2022-02-18"
+    "lastRevisedDate": "2022-07-13"
+
   },
   {
     "id": "DomainExplorer",
@@ -25,7 +26,7 @@
   },
   {
     "id": "IPExplorer",
-    "lastRevisedDate": "2022-03-10"
+    "lastRevisedDate": "2022-07-13"
   },
   {
     "id": "LinuxExplorer",
@@ -41,7 +42,7 @@
   },
   {
     "id": "GettingStarted",
-    "lastRevisedDate": "2022-01-28"
+    "lastRevisedDate": "2022-07-21"
   },
   {
     "id": "MDATP",
@@ -57,7 +58,7 @@
   },
   {
     "id": "MLExamples",
-    "lastRevisedDate": "2022-03-10"
+    "lastRevisedDate": "2022-07-01"
   },
   {
     "id": "Solarwinds",
@@ -65,7 +66,7 @@
   },
   {
     "id": "HandsOnAPI",
-    "lastRevisedDate": "2022-05-05"
+    "lastRevisedDate": "2022-08-04"
   },
   {
     "id": "HandsOnSDK",
@@ -73,23 +74,23 @@
   },
   {
     "id": "ConfigEnv",
-    "lastRevisedDate": "2022-03-10"
+    "lastRevisedDate": "2022-07-01"
   },
   {
     "id": "CredScanBlob",
-    "lastRevisedDate": "2022-05-05"
+    "lastRevisedDate": "2022-08-04"
   },
   {
     "id": "CredScanADX",
-    "lastRevisedDate": "2022-05-16"
+    "lastRevisedDate": "2022-08-04"
   },
   {
     "id": "CredScanLA",
-    "lastRevisedDate": "2022-05-12"
+    "lastRevisedDate": "2022-08-04"
   },
   {
     "id": "Tour",
-    "lastRevisedDate": "2022-03-10"
+    "lastRevisedDate": "2022-07-01"
   },
   {
     "id": "LinuxCommands",
@@ -97,10 +98,14 @@
   },
   {
     "id": "SynapseSetup",
-    "lastRevisedDate": "2022-05-05"
+    "lastRevisedDate": "2022-08-16"
   },
   {
     "id": "SynapseNetwork",
     "lastRevisedDate": "2022-05-05"
+  },
+  {
+    "id": "MaliciousLinksInTeams",
+    "lastRevisedDate": "2022-05-09"
   }
 ]
