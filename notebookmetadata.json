@@ -13,11 +13,12 @@
   },
   {
     "id": "WindowsHostExplorer",
-    "lastRevisedDate": "2022-02-18"
+    "lastRevisedDate": "2022-08-16"
   },
   {
     "id": "AccountExplorer",
-    "lastRevisedDate": "2022-02-18"
+    "lastRevisedDate": "2022-07-13"
+
   },
   {
     "id": "DomainExplorer",
@@ -25,11 +26,11 @@
   },
   {
     "id": "IPExplorer",
-    "lastRevisedDate": "2022-03-10"
+    "lastRevisedDate": "2022-07-13"
   },
   {
     "id": "LinuxExplorer",
-    "lastRevisedDate": "2022-02-18"
+    "lastRevisedDate": "2022-08-16"
   },
   {
     "id": "Covid19",
@@ -57,7 +58,7 @@
   },
   {
     "id": "MLExamples",
-    "lastRevisedDate": "2022-03-10"
+    "lastRevisedDate": "2022-07-01"
   },
   {
     "id": "Solarwinds",
@@ -73,7 +74,7 @@
   },
   {
     "id": "ConfigEnv",
-    "lastRevisedDate": "2022-03-10"
+    "lastRevisedDate": "2022-07-01"
   },
   {
     "id": "CredScanBlob",
@@ -89,7 +90,7 @@
   },
   {
     "id": "Tour",
-    "lastRevisedDate": "2022-03-10"
+    "lastRevisedDate": "2022-07-01"
   },
   {
     "id": "LinuxCommands",
@@ -97,7 +98,7 @@
   },
   {
     "id": "SynapseSetup",
-    "lastRevisedDate": "2022-05-05"
+    "lastRevisedDate": "2022-08-16"
   },
   {
     "id": "SynapseNetwork",
