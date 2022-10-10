@@ -9,6 +9,7 @@ In this article, we will discuss a few topics:
 3. How to handle errors and exceptions in notebooks
 4. Permission check in notebooks
 5. How to persist key findings in Sentinel through REST API
+6. Developing and testing in Synapse Studio
 
 Here is the generic information about [Azure Synapse notebooks](https://docs.microsoft.com/en-us/azure/synapse-analytics/spark/apache-spark-development-using-notebooks).
 
@@ -89,6 +90,10 @@ Azure service principal is used in Sentinel automation notebooks to access vario
 Since each notebook template may access different data sources and REST APIs with different actions (w/r), it is possible that notebooks will fail during execution due to insufficient permissions.  
 
 To avoid the situation, the service principal should be given peoper permissions to execute target notebooks.  At the same time, notebook authors should try to catch the exception and render meaningful error message. Usually, client object initizliation will not throw exception, but when the client object is used to access a resource object, permission exception will be thrown.
+
+## Developing and testing in Synapse Studio
+First, please develop your notebook in Synapse Studio, which will help you to know more about Synapse and test your notebooks in the process.
+Lastly, please set up pipelines and triggers to test your notebooks in Synapse automated environment.
 
 # More Information
 
