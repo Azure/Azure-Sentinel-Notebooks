@@ -3,7 +3,7 @@ cd artifacts
 mkdir $1
 cd $1
 echo Downloading labels for model $1...
-curl -L https://github.com/microsoft/msticpy-data/blob/mitre-inference/mitre-inference-models/$1/labels?raw=true -o "labels"
+curl -L https://github.com/microsoft/msticpy-data/blob/mitre-inference/mitre-inference-models/$1/labels.json?raw=true -o "labels"
 echo Downloaded labels for model $1.
 echo Downloading tokenizer for model $1...
 curl -L https://github.com/microsoft/msticpy-data/blob/mitre-inference/mitre-inference-models/$1/tokenizer?raw=true -o "tokenizer"
