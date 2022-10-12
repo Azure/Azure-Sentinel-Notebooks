@@ -140,6 +140,7 @@ def format_predictions(
         for j, output in enumerate(outputs[i]):
             technique = labels['label_to_technique'][int(output['label'].split('_')[1])]
             outputs[i][j]['technique'] = technique
+            outputs[i][j]['technique_name'] = labels['technique_to_name'][technique]
             if configs['chunk']:
                 outputs[i][j]['chunk'] = j+1
 
@@ -266,12 +267,12 @@ def process_shap_explainability_for_row(
                 shap.plots.text(shap_object)
 
                 print('Positive SHAP Contribution to prediction: ')
-                print(list(zip(contribution['positive'].keys(), contribution['positive'].values())))
+                print(list(zip(contribution[i]['positive'].keys(), contribution[i]['positive'].values())))
                 print()
 
                 print('Negative SHAP Contribution to prediction: ')
-                print(list(zip(contribution['negative'].keys(), contribution['negative'].values())))
+                print(list(zip(contribution[i]['negative'].keys(), contribution[i]['negative'].values())))
                 print()
 
                 print('Neutral SHAP Contribution to prediction: ')
-                print(list(zip(contribution['neutral'].keys(), contribution['neutral'].values())))
+                print(list(zip(contribution[i]['neutral'].keys(), contribution[i]['neutral'].values())))
