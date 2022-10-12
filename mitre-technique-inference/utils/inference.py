@@ -236,6 +236,10 @@ def process_shap_explainability_for_row(
 
             print('Negative SHAP Contribution to prediction: ')
             print(list(zip(contribution['negative'].keys(), contribution['negative'].values())))
+            print()
+
+            print('Neutral SHAP Contribution to prediction: ')
+            print(list(zip(contribution['neutral'].keys(), contribution['neutral'].values())))
 
 
     elif isinstance(shap_values, list):
@@ -267,3 +271,7 @@ def process_shap_explainability_for_row(
 
                 print('Negative SHAP Contribution to prediction: ')
                 print(list(zip(contribution['negative'].keys(), contribution['negative'].values())))
+                print()
+
+                print('Neutral SHAP Contribution to prediction: ')
+                print(list(zip(contribution['neutral'].keys(), contribution['neutral'].values())))
