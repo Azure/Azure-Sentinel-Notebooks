@@ -230,6 +230,14 @@ def process_shap_explainability_for_row(
             print('Shap Text Plot: ')
             shap.plots.text(shap_object)
 
+            print('Positive SHAP Contribution to prediction: ')
+            print(list(zip(contribution['positive'].keys(), contribution['positive'].values())))
+            print()
+
+            print('Negative SHAP Contribution to prediction: ')
+            print(list(zip(contribution['negative'].keys(), contribution['negative'].values())))
+
+
     elif isinstance(shap_values, list):
         for i in range(len(shap_values)):
             print(f'Chunk #{i+1} \n')
@@ -252,3 +260,10 @@ def process_shap_explainability_for_row(
 
                 print('Shap Text Plot: ')
                 shap.plots.text(shap_object)
+
+                print('Positive SHAP Contribution to prediction: ')
+                print(list(zip(contribution['positive'].keys(), contribution['positive'].values())))
+                print()
+
+                print('Negative SHAP Contribution to prediction: ')
+                print(list(zip(contribution['negative'].keys(), contribution['negative'].values())))
