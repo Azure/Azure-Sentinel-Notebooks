@@ -1,0 +1,27 @@
+GOOD_REPORTS = 
+[
+    'Detects exploitation attempt against Citrix Netscaler, Application Delivery Controller (ADS) and Citrix Gateway exploiting vulnerabilities reported as CVE-2020-8193 and CVE-2020-8195', # [0.90469]
+    'The built-in Windows utility rundll32.exe is then used to load this DLL by the original .lnk file,' # [0.92715]
+    'Detects the pattern of UAC Bypass using computerdefaults.exe (UACMe 59)', # [0.988179]
+    'Threat actors can use auditpol binary to change audit policy configuration to impair detection capability. This can be carried out by selectively disabling/removing certain audit policies as well as restoring a custom policy owned by the threat actor.', # [0.88682]
+    'FIN6 utilizes cmd to execute Scheduled Tasks',
+    'In the case of Astaroth trojan, the .lnk file contains an argument into WMIC.exe to run in non-interactive mode, which forgoes opening a window that the victim could notice, to download the hardcoded url in the .lnk',
+    'Load custom PowerShell module and take screenshots.',
+    'Detects the use of various web request with commandline tools or Windows PowerShell command,methods (including aliases)',
+    'Attempting to disable scheduled scanning and other parts of windows defender atp.',
+    'Detects the pattern of UAC Bypass using IEInstal.exe (UACMe 64)',
+    'Detects changes to the Registry in which a monitor program gets registered to dump process memory of the lsass.exe process memory',
+    'Detects attempts to use screencapture to collect macOS screenshots'.
+    'This query over Azure Active Directory sign-in considers all user sign-ins for each Azure Active Directory application and picks out the most anomalous change in location profile for a user within an individual application. The intent is to hunt for user account compromise, possibly via a specific applicationvector.',
+    'Detects LSASS process access by LaZagne for credential dumping.',
+    'Detects base64 encoded powershell cmdlet invocation of known suspicious cmdlets', 
+    'Detects the creation of scheduled tasks that involves a temporary folder and runs only once', 
+    'The malware proceeds to decrypt and embedded configuration of 128 bytes using a simple XOR routine', 
+    'Detects an UAC bypass that uses changepk.exe and slui.exe (UACMe 61)', 
+    'When the trojan starts up it will attempt to install a scheduled task with the name of “Java Maintenance64” to keep itself running.',
+    'This differs from the previous OopsIE variant that used a hardcoded task name for the scheduled task', 
+    'TG-3390 actors favor At.exe to create scheduled tasks for executing commands on remote systems', 
+    'Detects the pattern of UAC Bypass using NTFS reparse point and wusa.exe DLL hijacking (UACMe 36)', 
+    'Detects disabling Windows Defender Tamper Protection', 
+    'Adversaries may abuse msiexec.exe to proxy execution of malicious payloads. Msiexec.exe is the command-line utility for the Windows Installer and is thus commonly associated with executing installation packages (.msi). The Msiexec.exe binary may also be digitally signed by Microsoft.'
+]
