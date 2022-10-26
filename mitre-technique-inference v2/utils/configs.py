@@ -19,9 +19,18 @@ def configure_model_parameters():
         value=0.6
     )
 
+    flag_explainability_widget = widgets.Select(
+        options = ['True', 'False'], 
+        style = constants.style, 
+        layout = widgets.Layout(**constants.layout), 
+        description = 'Obtain Model Explainability Summary?: '
+    )
+
     return {
         'ti': threat_intel_data_widget,
-        'score': score_threshold_widget}
+        'score': score_threshold_widget,
+        'flag_explainability': flag_explainability_widget
+    }
 
 def format_user_configuration(all_config_widgets, verbose =True):
     configs_dict = {
@@ -30,7 +39,8 @@ def format_user_configuration(all_config_widgets, verbose =True):
 
     formatted_configs = {
         'ti': configs_dict['ti'].strip(),
-        'score': configs_dict['score']
+        'score': configs_dict['score'],
+        'flag_explainability': eval(configs_dict['flag_explainability'])
     }
 
     if verbose:
@@ -40,6 +50,8 @@ def format_user_configuration(all_config_widgets, verbose =True):
         print(f"\t'{formatted_configs['ti']}'\n")
 
         print(f"Confidence Score Threshold: {formatted_configs['score']}\n" )
+
+        print(f"Obtain Model Explainability Summary: {formatted_configs['flag_explainability']}\n" )
 
         print('################################################# \n')
 

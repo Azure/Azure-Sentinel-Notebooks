@@ -1,6 +1,8 @@
 import re
 import shap
 import numpy as np
+import nltk
+import copy
 import pandas as pd
 from typing import List, Dict, Union
 from utils import process, constants, storage
@@ -99,7 +101,10 @@ def format_predictions(
 
     inference_list = []
     ti_data = processed_data_object.chunked_data
-    shap_obj = ShapPipeline(classifier=classifier)
+    flag_explainability = configs['flag_explainability']
+
+    if flag_explainability:
+        shap_obj = ShapPipeline(classifier=classifier)
 
     if max([el['score'] for el in outputs]) < configs['score']:
         print('The confidence score for all predictions is lower than the confidence threshold. \nResetting confidence threshold to 0.0.')
@@ -121,27 +126,37 @@ def format_predictions(
             'shap_contribution': None
         }
 
+        if i == (len(ti_data) - 1):
+            inference_dict['sentences_#'] = f"{i*constants.chunk_num_sentences + 1}-{i*constants.chunk_num_sentences + len(nltk.sent_tokenize(ti_chunk))}"
+
         technique = labels['label_to_technique'][int(outputs[i]['label'].split('_')[1])]
+        outputs[i]['confidence_score'] = round(outputs[i]['score'], 5)
         outputs[i]['technique'] = technique
         outputs[i]['technique_name'] = labels['technique_to_name'][technique]
         outputs[i]['webpage_link'] = f"https://attack.mitre.org/techniques/{technique}/"
-        shap_base, shap_contribution = shap_obj.go(ti_chunk, outputs[i])
-        
         inference_dict['output'] = outputs[i]
-        inference_dict['shap_base'] = shap_base
-        inference_dict['shap_contribution'] = shap_contribution
+
+        if flag_explainability:
+            shap_base, shap_contribution = shap_obj.go(ti_chunk, outputs[i])
+            inference_dict['shap_base'] = shap_base
+            inference_dict['shap_contribution'] = shap_contribution
 
         inference_list.append(inference_dict)
 
-    if len(inference_list) > 0:    
-        inference_df = pd.DataFrame(inference_list)[
-            ['chunk_#', 'sentences_#', 
+    if len(inference_list) > 0:  
+        if flag_explainability:
+            columns =  ['chunk_#', 'sentences_#', 
             'threat_intel', 'processed_threat_intel', 'output', 
             'model', 'iocs', 'shap_base', 'shap_contribution']
-        ]
+        else:
+             columns =  ['chunk_#', 'sentences_#', 
+            'threat_intel', 'processed_threat_intel', 'output', 
+            'model', 'iocs']
+
+        inference_df = pd.DataFrame(inference_list)[columns]
     else:
         inference_df = pd.DataFrame()
-
+    
     iocs_df = transform_list_of_ioc_dicts(processed_data_object.iocs)
     
     return inference_df, iocs_df
@@ -158,73 +173,89 @@ def process_shap_values(shap_dict: dict):
     shap.plots.bar(shap_object)
     '''
 
+class css_style:
+   BOLD = '\033[1m'
+   END = '\033[0m'
+
 def print_detailed_report(inference_df, configs):
-    print('Threat Intel Data: ')
-    print(configs['ti'],'\n')
-
-    print('Confidence Score Threshold: ')
-    print(configs['score'],'\n')
-
-    print('**************************************************')
-
     if inference_df.empty:
         print('No MITRE Techniques inferred from the Threat Intel data with configured confidence threshold :( \n Consider reducing your score threshold, and re-run!')
+        return
+
+    for row_index in range(len(inference_df)):
+        _process_shap_explainability_for_row(
+            inference_df, row_index, configs['flag_explainability']
+        )
+
+def _pprint_dict(dictionary: Dict, key_order: list = None):
+    if key_order == None:
+        reordered_dict = copy.deepcopy(dictionary)
     else:
-        print(f'Shape of Inference DF: {inference_df.shape}')
-        for row_index in range(len(inference_df)):
-            _process_shap_explainability_for_row(
-                inference_df, row_index
-            )
+        reordered_dict = {key: dictionary[key] for key in key_order if key_order}
+    print('{')
+    for index, key, value in zip(range(len(reordered_dict)), reordered_dict.keys(), reordered_dict.values()):
+        if index == len(reordered_dict) - 1:
+            print(f"\t'{key}': {value}")
+        else:
+            print(f"\t'{key}': {value}, ")
+    print('}')
 
 def _process_shap_explainability_for_row(
     inference_df,
-    row_index
+    row_index,
+    flag_explainability
 ):
 
     try:
         data = inference_df.iloc[row_index]['threat_intel']
-        processed_data = inference_df.iloc[row_index]['processed_threat_intel']
-        shap_values = inference_df.iloc[row_index]['shap_base']
         output = inference_df.iloc[row_index]['output']
-        contribution = inference_df.iloc[row_index]['shap_contribution']
         sentences_no = inference_df.iloc[row_index]['sentences_#']
+        if flag_explainability:
+            shap_values = inference_df.iloc[row_index]['shap_base']
+            contribution = inference_df.iloc[row_index]['shap_contribution']
     except:
         raise IndexError(f'Index {row_index} is not in the dataframe.')
 
-    print(f'Sentences # : {sentences_no} \n')
-    print(f'Threat Intel Data: ')
+    print(css_style.BOLD + 'Sentences # ' + css_style.END + f': {sentences_no} \n')
+    print(css_style.BOLD + 'Threat Intel Data: ' + css_style.END)
     print(data + '\n')
-    print(f'Processed Data: ')
-    print(processed_data + '\n')
-    print('Predicted Label: ')
-    print(output)
+    print(css_style.BOLD + 'Predicted MITRE Technique: ' + css_style.END)
+    _pprint_dict(output, ['technique', 'technique_name', 'webpage_link', 'confidence_score'])
     print()
 
-    shap_object = process_shap_values(shap_values)
-    
-    positive_contribution = len(contribution['positive'])
-    negative_contribution = len(contribution['negative'])
+    if flag_explainability or 'shap_base' in inference_df.columns:
+        shap_object = process_shap_values(shap_values)
+        
+        positive_contribution = len(contribution['positive'])
+        negative_contribution = len(contribution['negative'])
+        shap_legend_dict = {'Red': 'Positive Contribution to Predicted Label', 'Blue': 'Negative Contribution to Predicted Label'}
 
-    if (positive_contribution == 0) and (negative_contribution == 0):
-        print('Insufficient shap data for explainability.')
-    else:
-        print('Shap Legend: {Red: Positive Contribution to Predicted Label, Blue: Negative Contribution to Predicted Label} \n')
+        if (positive_contribution == 0) and (negative_contribution == 0):
+            print('Insufficient shap data for explainability.')
+        else:
+            print(css_style.BOLD + 'Model Explainability: '  + css_style.END)
+            print('Shap Legend: ')
+            _pprint_dict(shap_legend_dict)
+            print()
 
-        print('Shap Text Plot: ')
-        shap.plots.text(shap_object)
+            print('Shap Text Plot: ' )
+            shap.plots.text(shap_object)
+            print()
 
-        print('Positive SHAP Contribution to prediction: ')
-        print(list(zip(contribution['positive'].keys(), contribution['positive'].values())))
-        print()
+            print('Top 10 tokens with Positive SHAP Contribution to predicted MITRE TTP: ')
+            positive_list = list(zip(contribution['positive'].keys(), contribution['positive'].values()))
+            print(positive_list[:10])
+            print()
 
-        print('Negative SHAP Contribution to prediction: ')
-        print(list(zip(contribution['negative'].keys(), contribution['negative'].values())))
-        print()
+            print('Top 10 tokens with Negative SHAP Contribution to predicted MITRE TTP: ')
+            negative_list = list(zip(contribution['negative'].keys(), contribution['negative'].values()))
+            print(negative_list[:10])
+            print()
 
-        print('Neutral SHAP Contribution to prediction: ')
-        print(list(zip(contribution['neutral'].keys(), contribution['neutral'].values())))
-        print()
-    print("**************************************************")
+            # print('Top Neutral SHAP Contribution to prediction: ')
+            # print(list(zip(contribution['neutral'].keys(), contribution['neutral'].values())))
+            # print()
+    print('**************************************************')
 
 def transform_list_of_ioc_dicts(ioc_dicts: List[Dict]):
     super_dict = defaultdict(list)
