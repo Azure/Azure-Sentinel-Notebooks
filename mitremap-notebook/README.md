@@ -11,7 +11,6 @@
 6. [Demo](#demo)
     - [1. MITRE Technique Inference for Threat Intel Data, WITH Model Explainability](#1-mitre-technique-inference-for-threat-intel-data-with-model-explainability)
     - [2. MITRE Technique Inference for Threat Intel Data, WITHOUT Model Explainability](#2-mitre-technique-inference-for-threat-intel-data-without-model-explainability)
-7. [Additional Resources](#additional-resources)
 <br><br>
 
 ## Motivation
@@ -187,5 +186,3 @@ Input Data Configuration:
 Output:
 
 <img src="./images/output_2.png" alt="Output Example #2" title="Output Example without Model Explanation" /><br>
-
-## Additional Resources
