@@ -36,7 +36,7 @@ This opens up several avenues for **Machine Learning**, more particularly **Natu
 
 The **MITRE ATT&CK** framework is an openly-sourced knowledge base of TTPs used by adversaries across enterprise and mobile applications. MITRE TTPs allow people and organizations to proactively identify vulnerabilites in their system based on the behaviors, methods and patterns of activity used by an actor group in different stages of a cyber operation. More information about the kinds of tactics and techniques used by threat actors can be found [here](https://attack.mitre.org/techniques/enterprise/).
 
-<img src="./media/mitre_map.png" alt="MITRE Enterprise Matrix" title="MITRE Enterprise Tactics and Techniques" /><br>
+<img src="./images/mitre_map.png" alt="MITRE Enterprise Matrix" title="MITRE Enterprise Tactics and Techniques" /><br>
 
 <br><br>
 
@@ -137,13 +137,13 @@ The notebook requires the following parameters from the user:
     Detects exploitation attempt against Citrix Netscaler, Application Delivery Controller (ADS) and Citrix Gateway exploiting vulnerabilities reported as CVE-2020-8193 and CVE-2020-8195
     ```
 
-2. ***Minimum Score Threshold***: 
+2. ***Confidence Score Threshold***: 
 - The TTP predictions for a sample TI input data have an associated confidence score from the NLP model, ranging from 0 (not very confident) to 1 (most confident). 
 - Filter the results to predictions with confidence >= threshold configured by the user. <br>
 
 - Default threshold: **0.6** <br> <br>
 
-3. ***Get Model Explainability***: 
+3. ***Obtain Model Explainability***: 
 - Obtain further insights into which words and phrases in your input data contributed to the TTP prediction, using [SHAP](https://arxiv.org/pdf/1705.07874.pdf) values. 
 - **Note**: Model Explainability will increase the time taken to obtain the inference results for your notebook! <br>
 
@@ -152,27 +152,40 @@ The notebook requires the following parameters from the user:
 
 ## Demo
 
-Setting ***Get Model Explainability***: **True** will increase the time taken to obtain insights for your notebook! If you are only interested in obtaining the TTP predictions for your Threat Intel data, consider setting ***Get Model Explainability*** to **False**.
+Setting ***Obtain Model Explainability*** to **True** will increase the time taken to obtain insights for your notebook! If you are only interested in obtaining the TTP predictions for your Threat Intel data, consider setting ***Obtain Model Explainability*** to **False**.
+
+<br>
+
+Time to run the inference function will depend on the -
+
+1. Length of the Threat Intel Report, and
+2. If **Obtain Model Explainability** is set to True or False.
+
+For our example threat reports above, time estimates are as follows -
+
+- < 1 minute without model explainability, and 
+- 1-2 minutes with model explainability.
+
 <br><br>
 
 ### 1. MITRE Technique Inference for Threat Intel Data, WITH Model Explainability <br><br>
 
 Input Data Configuration:
 
-<img src="./media/input_1.png" alt="Input Example #1" title="Input Example #1" /><br>
+<img src="./images/input_1.png" alt="Input Example #1" title="Input Example #1" /><br>
 
 Output:
 
-<img src="./media/output_1.png" alt="Output Example #1" title="Output Example with Model Explanation" /><br>
+<img src="./images/output_1.png" alt="Output Example #1" title="Output Example with Model Explanation" /><br>
 
 ### 2. MITRE Technique Inference for Threat Intel Data, WITHOUT Model Explainability <br><br>
 
 Input Data Configuration:
 
-<img src="./media/input_2.png" alt="Input Example #2" title="Input Example #1" /><br>
+<img src="./images/input_2.png" alt="Input Example #2" title="Input Example #1" /><br>
 
 Output:
 
-<img src="./media/output_2.png" alt="Output Example #2" title="Output Example without Model Explanation" /><br>
+<img src="./images/output_2.png" alt="Output Example #2" title="Output Example without Model Explanation" /><br>
 
 ## Additional Resources

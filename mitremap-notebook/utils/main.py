@@ -8,7 +8,9 @@ from utils import (
 
 def go(config_widgets):
     configs = config_utils.format_user_configuration(config_widgets, verbose=True)
-
+    if configs['ti'] == '':
+        raise Exception('Please input non-empty threat intel data.')
+        
     assets = storage_utils.AssetStorage('distilgpt2-512')
     inference_model = inference_utils.InferenceClassificationPipeline(assets = assets)
 

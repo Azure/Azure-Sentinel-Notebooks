@@ -23,7 +23,7 @@ def configure_model_parameters():
         options = ['True', 'False'], 
         style = constants.style, 
         layout = widgets.Layout(**constants.layout), 
-        description = 'Obtain Model Explainability Summary?: '
+        description = 'Obtain Model Explainability?: '
     )
 
     return {

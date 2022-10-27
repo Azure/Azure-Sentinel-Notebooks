@@ -1,13 +1,13 @@
 import os
 import json
-import artifacts
 import joblib
 import torch
 from utils import constants
+from pathlib import Path
 from transformers import GPT2ForSequenceClassification
 
 class AssetStorage():
-    storage_folder = artifacts.__path__[0]
+    storage_folder = str(Path(os.getcwd()).parents[0])
     def __init__(self, model_name: str = None):
         self.model_name = constants.model if model_name == None else model_name
         
