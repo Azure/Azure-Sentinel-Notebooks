@@ -11,6 +11,7 @@
 6. [Demo](#demo)
     - [1. MITRE Technique Inference for Threat Intel Data, WITH Model Explainability](#1-mitre-technique-inference-for-threat-intel-data-with-model-explainability)
     - [2. MITRE Technique Inference for Threat Intel Data, WITHOUT Model Explainability](#2-mitre-technique-inference-for-threat-intel-data-without-model-explainability)
+7. [Use the MitreMap Notebook outside of Sentinel Notebooks](#7-use-the-mitremap-notebook-outside-of-sentinel-notebooks)
 <br><br>
 
 ## Motivation
@@ -49,7 +50,6 @@ from unstructured English text-based Threat Intel data. We also provide some exp
 <br><br>
 
 ## One-Time Setup
-<br>
 
 ### 1. Creating a virtual environment
 
@@ -88,16 +88,22 @@ Estimated Time: < 10 minutes
 
 - The model artifacts stored locally will comprise of:<br>
 
-    - ```../mitremap-notebook/distilgpt2-512/model_state_dicts``` - Model weights associated with the trained Distil-GPT2 Model.
-    - ```../mitremap-notebook/distilgpt2-512/labels``` - Mapping of prediction labels to MITRE Enterprise Techniques.
-    - ```../mitremap-notebook/distilgpt2-512/tokenizer``` - Trained Distil-GPT2 tokenizer associated with the model. <br>
+    - ```./mitremap-notebook/distilgpt2-512/model_state_dicts``` - Model weights associated with the trained Distil-GPT2 Model.
+    - ```./mitremap-notebook/distilgpt2-512/labels``` - Mapping of prediction labels to MITRE Enterprise Techniques.
+    - ```./mitremap-notebook/distilgpt2-512/tokenizer``` - Trained Distil-GPT2 tokenizer associated with the model. <br>
 <br>
 
 - If you have access to a GPU, we HIGHLY recommend using a GPU in the inference environment. The notebook will detect the device that is used to run the notebook, and configure the model to run on that device.
 
 The following BASH script can be used to download the model artifacts in the notebook - ```! bash ./model.sh distilgpt2-512```
 
-<br><br>
+<br>
+
+### 3. Downloading the utils-1.0-py3-none-any.whl
+
+Download the utils whl using ```pip install utils-1.0-py3-none-any.whl``` to use the inference packages on your input data.
+
+<br>
 
 ## Input Parameters
 
@@ -169,20 +175,30 @@ For our example threat reports above, time estimates are as follows -
 
 ### 1. MITRE Technique Inference for Threat Intel Data, WITH Model Explainability <br><br>
 
-Input Data Configuration:
+**Input Data Configuration:**
 
 <img src="./images/input_1.png" alt="Input Example #1" title="Input Example #1" /><br>
 
-Output:
+**Output:**
 
 <img src="./images/output_1.png" alt="Output Example #1" title="Output Example with Model Explanation" /><br>
 
 ### 2. MITRE Technique Inference for Threat Intel Data, WITHOUT Model Explainability <br><br>
 
-Input Data Configuration:
+**Input Data Configuration:**
 
 <img src="./images/input_2.png" alt="Input Example #2" title="Input Example #1" /><br>
 
-Output:
+**Output:**
 
 <img src="./images/output_2.png" alt="Output Example #2" title="Output Example without Model Explanation" /><br>
+
+<br>
+
+## 7. Use the MitreMap Notebook outside of Sentinel Notebooks
+
+In order to use the MitreMap Notebook outside the Sentinel Environment, please ensure that you also include the following files in the same directory as your notebook -
+
+1. ```.\mitremap-notebook\requirements.txt``` - Download the external python packages to run the notebook
+2. ```.\mitremap-notebook\utils-1.0-py3-none-any.whl``` - Download the utils package
+3. ```.\mitremap-notebook\model.sh``` [Optional] - Download the model artifacts using BASH.
