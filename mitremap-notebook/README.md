@@ -38,7 +38,7 @@ The **MITRE ATT&CK** framework is an openly-sourced knowledge base of TTPs used 
 
 <img src="./images/mitre_map.png" alt="MITRE Enterprise Matrix" title="MITRE Enterprise Tactics and Techniques" /><br>
 
-<br><br>
+<br>
 
 ## Goals of the MitreMap Notebook
 
@@ -171,9 +171,9 @@ For our example threat reports above, time estimates are as follows -
 - < 1 minute without model explainability, and 
 - 1-2 minutes with model explainability.
 
-<br><br>
+<br>
 
-### 1. MITRE Technique Inference for Threat Intel Data, WITH Model Explainability <br><br>
+### 1. MITRE Technique Inference for Threat Intel Data, WITH Model Explainability <br>
 
 **Input Data Configuration:**
 
@@ -181,9 +181,9 @@ For our example threat reports above, time estimates are as follows -
 
 **Output:**
 
-<img src="./images/output_1.png" alt="Output Example #1" title="Output Example with Model Explanation" /><br>
+<img src="./images/output_1.png" alt="Output Example #1" title="Output Example with Model Explanation" /><br><br>
 
-### 2. MITRE Technique Inference for Threat Intel Data, WITHOUT Model Explainability <br><br>
+### 2. MITRE Technique Inference for Threat Intel Data, WITHOUT Model Explainability <br>
 
 **Input Data Configuration:**
 
@@ -191,9 +191,7 @@ For our example threat reports above, time estimates are as follows -
 
 **Output:**
 
-<img src="./images/output_2.png" alt="Output Example #2" title="Output Example without Model Explanation" /><br>
-
-<br>
+<img src="./images/output_2.png" alt="Output Example #2" title="Output Example without Model Explanation" /><br><br>
 
 ## 7. Use the MitreMap Notebook outside of Sentinel Notebooks
 
