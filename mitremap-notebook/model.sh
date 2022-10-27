@@ -1,5 +1,4 @@
 #!/bin/bash
-cd artifacts
 mkdir $1
 cd $1
 echo Downloading labels for model $1...
