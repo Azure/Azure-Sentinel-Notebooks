@@ -27,7 +27,7 @@ For example **Indicators of Compromise (IoC)** represent network artifacts of a 
 
 **Threat Intel Data** is another form of CTI which comprises of unstructured text data, describing the tools, techniques and procedures (TTPs) used by threat actor groups in a cyber operation. Historically TI data is made available to the security community in the form of *blog posts reports* and *white papers*. 
 
-With the increasing numebr of cyber attacks, it is not scalable to manually process this growing corpus of TI data to understand the motivations capabilities and TTPs associated with an actor group. Additionally TI data does not facilitate easy extraction of IoCs which, if documented in the report, can result in the loss of known indicators in the threat intelligence corpus. 
+It is not scalable to manually process this growing corpus of TI data to understand the motivations capabilities and TTPs associated with an actor group. Additionally TI data does not facilitate easy extraction of IoCs which, if documented in the report, can result in the loss of known indicators in the threat intelligence corpus. 
 
 This opens up several avenues for **Machine Learning**, more particularly **Natural Language Processing** (NLP), to identify TTPs and extract IoCs from this data.
 <br><br>
@@ -158,6 +158,12 @@ The notebook requires the following parameters from the user:
 ## Demo
 
 Setting ***Obtain Model Explainability*** to **True** will increase the time taken to obtain insights for your notebook! If you are only interested in obtaining the TTP predictions for your Threat Intel data, consider setting ***Obtain Model Explainability*** to **False**.
+
+The model predictions comprises of the following outputs:
+1. ```technique``` : Unique ID associated with the predicted MITRE Enterprise ATT&CK technique.
+2. ```technique_name```: Name of the above technique.
+3. ```webpage_link```: Webpage link on the MITRE ATT&CK website.
+4. ```confidence_score```: Confidence associated with the MITRE technique prediction, from 0 (not confident) to 1 (very confident).
 
 <br>
 
