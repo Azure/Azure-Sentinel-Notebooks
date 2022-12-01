@@ -1,17 +1,24 @@
 # MitreMap - Inferring MITRE Technique from Threat Intel Data
 
 ## Table of Contents
-1. [Motivation](#motivation)
-2. [MITRE ATT&CK Framework](#mitre-attck-framework)
-3. [Goals of the MitreMap Notebook](#goals-of-the-mitremap-notebook)
-4. [One-Time Setup](#one-time-setup)
+1. [Overview](#overview)
+2. [Motivation](#motivation)
+3. [MITRE ATT&CK Framework](#mitre-attck-framework)
+4. [Goals of the MitreMap Notebook](#goals-of-the-mitremap-notebook)
+5. [One-Time Setup](#one-time-setup)
     - [1. Creating a virtual environment](#1-creating-a-virtual-environment)
     - [2. Downloading model artifacts](#2-downloading-model-artifacts)
-5. [Input Parameters](#input-parameters)
-6. [Demo](#demo)
+6. [Input Parameters](#input-parameters)
+7. [Demo](#demo)
     - [1. MITRE Technique Inference for Threat Intel Data, WITH Model Explainability](#1-mitre-technique-inference-for-threat-intel-data-with-model-explainability)
     - [2. MITRE Technique Inference for Threat Intel Data, WITHOUT Model Explainability](#2-mitre-technique-inference-for-threat-intel-data-without-model-explainability)
-7. [Use the MitreMap Notebook outside of Sentinel Notebooks](#7-use-the-mitremap-notebook-outside-of-sentinel-notebooks)
+8. [Use the MitreMap Notebook outside of Sentinel Notebooks](#use-the-mitremap-notebook-outside-of-sentinel-notebooks)
+
+## Overview
+
+This notebook allows a user to map descriptive text of an incident on to relevant MITRE ATT&CK Enterprise techniques. It uses a [GPT2](https://huggingface.co/gpt2) language model to associate terms in the description with similar descriptions in past incidents. It also extracts relevant Indicators of Compromise from the text.
+
+You can use the notebook with one of several pre-trained models or train your own model using your own threat reports or public sources.
 <br><br>
 
 ## Motivation
@@ -53,15 +60,22 @@ from unstructured English text-based Threat Intel data. We also provide some exp
 
 ### 1. Creating a virtual environment
 
-Please configure a virtual environment, and download the ```../mitremap-notebook/requirements.txt``` packages in your venv -
+If you are running the Jupyter notebook locally, please configure a virtual environment, and download the ```../mitremap-notebook/requirements.txt``` packages in your venv from the terminal-
 
 ``` 
     > cd Azure-Sentinel-Notebooks
     > pip install virtualenv
     > virtualenv <VENV_NAME>
-    > source <VENV_NAME>\Scripts\activate
+    > <VENV_NAME>\Scripts\activate
     > cd mitremap-notebook
     > pip install -r requirements.txt
+```
+
+Alternatively, if you are running the notebook in AML, you can create a venv using ```conda``` and download the requirements in the notebook cell using -
+
+```
+import sys
+!{sys.executable} -m pip install -r requirements.txt
 ```
 
 __Key packages downloaded include:__ 
@@ -72,6 +86,10 @@ __Key packages downloaded include:__
 - nltk==3.6.2
 - iocextract==1.13.1
 - shap==0.41.0
+
+If installing in a pre-built environment (Azure ML), try ```requirements.txt``` first. Due to conflicts with packages in the environment, please be prepared to dedicate the AML Compute to this notebook.
+
+If your notebook is unable to run, please install the full list of dependencies stored in ```requirements-stable.txt```.
 <br><br>
 
 ### 2. Downloading model artifacts
@@ -81,6 +99,8 @@ Estimated Time: < 10 minutes
 - [**Distil-GPT2**](https://huggingface.co/distilgpt2) is an English-language model, pre-trained with the smallest GPT-2 Model, and was developed using knowledge-distillation, to serve as a faster, light-weight version of GPT-2. 
 
 - We train a Distil-GPT2 model on publicly available Threat Intel data that has been mapped to Enterprise Techniques by security experts. We have scraped data from TRAM, Sentinel Hunting and Detection Queries, Sigma, CTID, and MITRE Repositories to create our training dataset, comprising of 13k entries. The model has been trained on all 191 MITRE Enterprise techniques, but the number of entries per technique used for training varies.
+
+- The model has been trained using a tokenizer with max length 512. The maximum length corresponds to the number of tokens in a single cyber report input which are inputted into the model, after tokenization using the GPT2 tokenizer. **We experimented with GPT2 and DistilGPT2 models with different tokenizer lengths, but found the the distilgpt2 model with 512 token lengths to have the best performance on the test data. Hence, the model artifacts are stored under the folder name ```distilgpt2-512```**.
 
 - In order to download the model artifacts, you will need ```bash``` configured in your notebook environment. The bash script will download the trained ```distilgpt2-512``` model artifacts from [MSTICPy's Data Repository](https://github.com/microsoft/msticpy-data/tree/mitre-inference/mitre-inference-models) to the local path ```../mitremap-notebook/distilgpt2-512/*```. <br>
 
@@ -95,19 +115,19 @@ Estimated Time: < 10 minutes
 
 - If you have access to a GPU, we HIGHLY recommend using a GPU in the inference environment. The notebook will detect the device that is used to run the notebook, and configure the model to run on that device.
 
-The following BASH script can be used to download the model artifacts in the notebook - ```! bash ./model.sh distilgpt2-512```
+The following BASH script can be used to download the model artifacts in the notebook - ```%%bash ./model.sh```
 
 <br>
 
 ### 3. Downloading the utils-1.0-py3-none-any.whl
 
-Download the utils whl using ```pip install utils-1.0-py3-none-any.whl``` to use the inference packages on your input data.
+Download the utils whl using ```%pip install utils-1.0-py3-none-any.whl``` to use the inference packages on your input data.
 
 <br>
 
 ## Input Parameters
 
-**IMPORTANT** In order to view the widgets in your Notebook, consider downloading the following jupyter extension via Terminal - ```jupyter labextension install @jupyter-widgets/jupyterlab-manager``` <br>
+**IMPORTANT** In order to view the widgets in your Notebook, you **must** download the following jupyter extension via Terminal - ```jupyter labextension install @jupyter-widgets/jupyterlab-manager``` <br>
 
 The notebook requires the following parameters from the user:
 
@@ -199,7 +219,7 @@ For our example threat reports above, time estimates are as follows -
 
 <img src="./images/output_2.png" alt="Output Example #2" title="Output Example without Model Explanation" /><br><br>
 
-## 7. Use the MitreMap Notebook outside of Sentinel Notebooks
+## Use the MitreMap Notebook outside of Sentinel Notebooks
 
 In order to use the MitreMap Notebook outside the Sentinel Environment, please ensure that you also include the following files in the same directory as your notebook -
 
