@@ -19,6 +19,8 @@
 This notebook allows a user to map descriptive text of an incident on to relevant MITRE ATT&CK Enterprise techniques. It uses a [GPT2](https://huggingface.co/gpt2) language model to associate terms in the description with similar descriptions in past incidents. It also extracts relevant Indicators of Compromise from the text.
 
 You can use the notebook with one of several pre-trained models or train your own model using your own threat reports or public sources.
+
+In order to use the notebook externally from the Sentinel-Notebooks environment, please refer to the [Use the MitreMap Notebook outside of Sentinel Notebooks](#use-the-mitremap-notebook-outside-of-sentinel-notebooks) section.
 <br><br>
 
 ## Motivation
@@ -102,9 +104,7 @@ Estimated Time: < 10 minutes
 
 - The model has been trained using a tokenizer with max length 512. The maximum length corresponds to the number of tokens in a single cyber report input which are inputted into the model, after tokenization using the GPT2 tokenizer. **We experimented with GPT2 and DistilGPT2 models with different tokenizer lengths, but found the the distilgpt2 model with 512 token lengths to have the best performance on the test data. Hence, the model artifacts are stored under the folder name ```distilgpt2-512```**.
 
-- In order to download the model artifacts, you will need ```bash``` configured in your notebook environment. The bash script will download the trained ```distilgpt2-512``` model artifacts from [MSTICPy's Data Repository](https://github.com/microsoft/msticpy-data/tree/mitre-inference/mitre-inference-models) to the local path ```../mitremap-notebook/distilgpt2-512/*```. <br>
-
-- **Alternatively**, you can use GitHub to download the model artifacts to the above local path. 
+- You can download the model artifacts using ```bash``` or ```powershell```. Either script will download the trained ```distilgpt2-512``` model artifacts from [MSTICPy's Data Repository](https://github.com/microsoft/msticpy-data/tree/mitre-inference/mitre-inference-models) to the local path ```../mitremap-notebook/distilgpt2-512/*```. Alternatively, you can use GitHub to download the model artifacts to the above local path. <br>
 
 - The model artifacts stored locally will comprise of:<br>
 
@@ -115,7 +115,8 @@ Estimated Time: < 10 minutes
 
 - If you have access to a GPU, we HIGHLY recommend using a GPU in the inference environment. The notebook will detect the device that is used to run the notebook, and configure the model to run on that device.
 
-The following BASH script can be used to download the model artifacts in the notebook - ```%%bash ./model.sh```
+**Option 1:** BASH script can be used to download the model artifacts in the notebook - ```%%bash ./model.sh``` <br>
+**Option 2:** Powershell script can be used to download the model artifacts in the notebook - ```!PowerShell ./model.ps1```
 
 <br>
 
@@ -225,4 +226,4 @@ In order to use the MitreMap Notebook outside the Sentinel Environment, please e
 
 1. ```.\mitremap-notebook\requirements.txt``` - Download the external python packages to run the notebook
 2. ```.\mitremap-notebook\utils-1.0-py3-none-any.whl``` - Download the utils package
-3. ```.\mitremap-notebook\model.sh``` [Optional] - Download the model artifacts using BASH.
+3. ```.\mitremap-notebook\model.sh``` or ```.\mitremap-notebook\model.ps1``` [Optional] - Download the model artifacts using BASH or Powershell.
