@@ -89,9 +89,7 @@ __Key packages downloaded include:__
 - iocextract==1.13.1
 - shap==0.41.0
 
-If installing in a pre-built environment (Azure ML), try ```requirements.txt``` first. Due to conflicts with packages in the environment, please be prepared to dedicate the AML Compute to this notebook.
-
-If your notebook is unable to run, please install the full list of dependencies stored in ```requirements-stable.txt```.
+If installing in a pre-built environment (Azure ML), try ```requirements.txt``` first. Due to conflicts with packages in the environment, please be prepared to dedicate the AML Compute to this notebook. If your notebook is unable to run, please install the full list of dependencies stored in ```requirements-stable.txt```.
 <br><br>
 
 ### 2. Downloading model artifacts
