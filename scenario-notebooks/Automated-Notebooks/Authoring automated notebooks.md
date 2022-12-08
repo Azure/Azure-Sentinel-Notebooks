@@ -11,7 +11,7 @@ In this article, we will discuss a few topics:
 5. How to persist key findings in Sentinel through REST API
 6. Developing and testing in Synapse Studio
 
-Here is the generic information about [Azure Synapse notebooks](https://docs.microsoft.com/en-us/azure/synapse-analytics/spark/apache-spark-development-using-notebooks).
+Here is the generic information about [Azure Synapse notebooks](https://docs.microsoft.com/azure/synapse-analytics/spark/apache-spark-development-using-notebooks).
 
 ---
 
@@ -117,8 +117,8 @@ Lastly, please set up pipelines and triggers to test your notebooks in Synapse a
 # More Information
 
 - [Azure Synapse Studio Notebooks](https://github.com/Azure-Samples/Synapse/blob/main/Notebooks/Introduction%20to%20Azure%20Synapse%20Studio%20Notebooks.ipynb)
-- [Develop Synapse notebooks in Azure Synapse Analytics](https://docs.microsoft.com/en-us/azure/synapse-analytics/spark/apache-spark-development-using-notebooks).
-- [Intro to Microsoft Spark Utilities](https://docs.microsoft.com/en-us/azure/synapse-analytics/spark/microsoft-spark-utilities?pivots=programming-language-python)
+- [Develop Synapse notebooks in Azure Synapse Analytics](https://docs.microsoft.com/azure/synapse-analytics/spark/apache-spark-development-using-notebooks).
+- [Intro to Microsoft Spark Utilities](https://docs.microsoft.com/azure/synapse-analytics/spark/microsoft-spark-utilities?pivots=programming-language-python)
 
 ---
 
