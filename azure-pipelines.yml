@@ -17,9 +17,9 @@ jobs:
   strategy:
     matrix:
       Python36:
-        python.version: '3.6'
-      Python38:
         python.version: '3.8'
+      Python38:
+        python.version: '3.10'
   pool:
     vmImage: 'ubuntu-latest'
   steps:
