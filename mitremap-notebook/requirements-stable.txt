@@ -83,7 +83,7 @@ nltk==3.6.2
 notebook==6.4.12
 numba==0.56.2
 numpy==1.23.3
-oauthlib==3.2.1
+oauthlib==3.2.2
 packaging==21.3
 pandas==1.5.0
 pandocfilters==1.5.0
