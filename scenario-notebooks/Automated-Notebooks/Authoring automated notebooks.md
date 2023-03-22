@@ -1,7 +1,7 @@
 
 # Authoring automated Sentinel notebooks
 
-Sentinel notebooks automation is build on the top of Azure Synapse Analytics pipeline platform. 
+Sentinel notebooks automation is build on the top of Azure Synapse Analytics pipeline platform.
 
 In this article, we will discuss a few topics:
 1. How to retrieve secrets saved in Azure Key Vault
@@ -15,8 +15,8 @@ Here is the generic information about [Azure Synapse notebooks](https://docs.mic
 
 ---
 
-## Retrieval of Azure Key Vault secrets 
-An instance of Azure Key Vault is created during notebook configuration time.  Project related secrets can be saved there.  From notebooks, it is easy to read the secrets in Azure Key Vault by using Synapse linked service, which is created during notebook configuration time to link Synapse workspace to Azure Key Vault. 
+## Retrieval of Azure Key Vault secrets
+An instance of Azure Key Vault is created during notebook configuration time.  Project related secrets can be saved there.  From notebooks, it is easy to read the secrets in Azure Key Vault by using Synapse linked service, which is created during notebook configuration time to link Synapse workspace to Azure Key Vault.
 
 ```
 secret = mssparkutils.credentials.getSecret(akv_name, secret_name, akv_link_name)
@@ -32,8 +32,8 @@ client_secret = mssparkutils.credentials.getSecret(akv_name, client_secret_name,
 Secrets saved in Azure Key Vault are fetched through Synapse linked service.
 ```
 credential = ClientSecretCredential(
-    tenant_id=tenant_id, 
-    client_id=client_id, 
+    tenant_id=tenant_id,
+    client_id=client_id,
     client_secret=client_secret)
 cred = AzureIdentityCredentialAdapter(credential)
 ```
@@ -75,7 +75,7 @@ Using mssparkutils.notebook.exit will not fail the pipeline, but provide an outp
 ```
 mssparkutils.notebook.exit("Auth failed")
 ```
-As a notebook developer, you need to decide which way is the right way to handle exceptions based on your scenarios. 
+As a notebook developer, you need to decide which way is the right way to handle exceptions based on your scenarios.
 
 
 ## Permission check in notebooks
@@ -87,22 +87,29 @@ Azure service principal is used in Sentinel automation notebooks to access vario
 |  Subscription   | W/R in sub  | RO in sub |
 |  Resource group | W/R in RG   | RO in RG  |
 
-Since each notebook template may access different data sources and REST APIs with different actions (w/r), it is possible that notebooks will fail during execution due to insufficient permissions.  
+Since each notebook template may access different data sources and REST APIs with different actions (w/r), it is possible that notebooks will fail during execution due to insufficient permissions.
 
 To avoid the situation, the service principal should be given peoper permissions to execute target notebooks.  At the same time, notebook authors should try to catch the exception and render meaningful error message. Usually, client object initizliation will not throw exception, but when the client object is used to access a resource object, permission exception will be thrown.
 
 ## How to persist key findings in Sentinel through REST API
-Sentinel Dynamic Summaries REST API is the recommended way to persist notebook execution results to Azure Log Analytics, where the notebook data can be joined with other data for further analysis.  And regular Sentinel users can query the data as long as they have proper permissions. [The cred scan notebook on Azure Log Analytics](https://github.com/Azure/Azure-Sentinel-Notebooks/blob/master/scenario-notebooks/Automated-Notebooks/AutomationGallery-CredentialScanOnAzureLogAnalytics.ipynb) and [The cred scan notebook on Azure blob storage](https://github.com/Azure/Azure-Sentinel-Notebooks/blob/master/scenario-notebooks/Automated-Notebooks/AutomationGallery-CredentialScanOnAzureBlobStorage.ipynb) provide good examples to send the results to the Dynamic Summaries table in an Azure Log Analytics workspace.
+Sentinel Dynamic Summaries REST API is the recommended way to persist notebook execution results to Azure Log Analytics, where the notebook data can be joined with other data for further analysis.  And regular Sentinel users can query the data as long as they have proper permissions.
+
+MSTICPy now includes support for creating and uploading Dynamic Summaries.
+See the [Dynamic Summary documenation](https://msticpy.readthedocs.io/en/latest/data_acquisition/SentinelDynamicSummaries.html). See the [AccountSigningEvaluation notebook](https://github.com/Azure/Azure-Sentinel-Notebooks/blob/master/scenario-notebooks/Automated-Notebooks/AccountSignInEvaluation.ipynb)
+
+The Credscan notebooks contain examples of how you can use the
+Dynamic Summaries API using the Python requests package.
+[The cred scan notebook on Azure Log Analytics](https://github.com/Azure/Azure-Sentinel-Notebooks/blob/master/scenario-notebooks/Automated-Notebooks/AutomationGallery-CredentialScanOnAzureLogAnalytics.ipynb) and [The cred scan notebook on Azure blob storage](https://github.com/Azure/Azure-Sentinel-Notebooks/blob/master/scenario-notebooks/Automated-Notebooks/AutomationGallery-CredentialScanOnAzureBlobStorage.ipynb) provide good examples to send the results to the Dynamic Summaries table in an Azure Log Analytics workspace.
 
 During notebook automation provisioning step, an ADLS storage instance is created for Azure Synapse workspace.  So it is possible to upload the result as a file to blob storage, through the build-in MSSparkUtils module via ADLS linked service. Very few individual users have access to the storage, but it can be used for sequential notebooks in later time.
 
 ```
 mount_name = "testmount"
-mssparkutils.fs.mount( 
-    "abfss://sentinelfiles@synapse4sentinel.dfs.core.windows.net", 
+mssparkutils.fs.mount(
+    "abfss://sentinelfiles@synapse4sentinel.dfs.core.windows.net",
     "/" + mount_name,
-    {"linkedService":"synapse4sentinel-WorkspaceDefaultStorage"} 
-) 
+    {"linkedService":"synapse4sentinel-WorkspaceDefaultStorage"}
+)
 
 job_id = mssparkutils.env.getJobId()
 
