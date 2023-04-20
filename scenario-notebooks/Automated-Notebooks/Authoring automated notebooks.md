@@ -91,6 +91,7 @@ Since each notebook template may access different data sources and REST APIs wit
 
 To avoid the situation, the service principal should be given peoper permissions to execute target notebooks.  At the same time, notebook authors should try to catch the exception and render meaningful error message. Usually, client object initizliation will not throw exception, but when the client object is used to access a resource object, permission exception will be thrown.
 
+=======
 ## How to persist key findings in Sentinel through REST API
 Sentinel Dynamic Summaries REST API is the recommended way to persist notebook execution results to Azure Log Analytics, where the notebook data can be joined with other data for further analysis.  And regular Sentinel users can query the data as long as they have proper permissions. [The cred scan notebook on Azure Log Analytics](https://github.com/Azure/Azure-Sentinel-Notebooks/blob/master/scenario-notebooks/Automated-Notebooks/AutomationGallery-CredentialScanOnAzureLogAnalytics.ipynb) and [The cred scan notebook on Azure blob storage](https://github.com/Azure/Azure-Sentinel-Notebooks/blob/master/scenario-notebooks/Automated-Notebooks/AutomationGallery-CredentialScanOnAzureBlobStorage.ipynb) provide good examples to send the results to the Dynamic Summaries table in an Azure Log Analytics workspace.
 
