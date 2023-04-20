@@ -111,5 +111,9 @@
   {
     "id": "FusionIncidents",
     "lastRevisedDate": "2022-12-15"
+  },
+  {
+    "id": "WAFSQLI",
+    "lastRevisedDate": "2023-02-17"
   }
 ]
