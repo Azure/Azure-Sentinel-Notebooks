@@ -131,7 +131,7 @@ tinycss2==1.1.1
 tldextract==3.4.0
 tokenizers==0.10.3
 torch==1.13.1
-tornado==6.2
+tornado==6.3.2
 tqdm==4.64.1
 traitlets==5.4.0
 transformers==4.5.1
