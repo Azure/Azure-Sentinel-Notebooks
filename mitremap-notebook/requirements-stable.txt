@@ -134,7 +134,7 @@ torch==1.13.1
 tornado==6.2
 tqdm==4.64.1
 traitlets==5.4.0
-transformers==4.5.1
+transformers==4.30.0
 types-cryptography==3.3.23
 typing_extensions==4.4.0
 urllib3==1.26.12
