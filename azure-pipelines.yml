@@ -47,7 +47,6 @@ jobs:
     displayName: 'Kernelspec check'
   - script: |
       python -m pip install nbconvert
-      # python -m pip install jupyter_contrib_nbextensions
 
       nbconver_opts="--ExecutePreprocessor.timeout=60 --ExecutePreprocessor.kernel_name=python3 --log-level 20 --allow-errors --to notebook"
       mkdir -p $(System.DefaultWorkingDirectory)/nb_output
