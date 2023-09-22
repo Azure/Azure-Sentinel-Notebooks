@@ -14,10 +14,6 @@ schedules:
 jobs:
 - job: PythonTests
   displayName: Python install and test Notebooks
-  strategy:
-    matrix:
-      Python310:
-        python.version: '3.10'
   pool:
     vmImage: 'ubuntu-latest'
   steps:
