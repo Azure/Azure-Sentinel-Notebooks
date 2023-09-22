@@ -14,6 +14,12 @@ schedules:
 jobs:
 - job: PythonTests
   displayName: Python install and test Notebooks
+    strategy:
+    matrix:
+      Python38:
+        python.version: '3.8.18'
+      Python310:
+        python.version: '3.10.13'
   pool:
     vmImage: 'ubuntu-latest'
   steps:
