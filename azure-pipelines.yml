@@ -17,7 +17,7 @@ jobs:
     strategy:
     matrix:
       Python310:
-        python.version: '3.10.13'
+        python.version: '3.10'
   pool:
     vmImage: 'ubuntu-latest'
   steps:
