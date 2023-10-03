@@ -70,7 +70,7 @@ jobs:
     displayName: 'URL Locale check'
 
 - job: SecurityChecks
-  displayName: Python install and test Notebooks
+  displayName: Security check
   pool:
     vmImage: 'windows-latest'
   steps:
