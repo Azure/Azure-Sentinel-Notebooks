@@ -15,7 +15,9 @@ jobs:
 - job: PythonTests
   displayName: Python install and test Notebooks
   strategy:
-
+    matrix:
+      Python310:
+        python.version: '3.10'
   pool:
     vmImage: 'ubuntu-latest'
   steps:
@@ -44,7 +46,7 @@ jobs:
   - script: |
       python -m pip install nbconvert
 
-      nbconver_opts="--ExecutePreprocessor.timeout=60 --ExecutePreprocessor.kernel_name=python3 --log-level 20 --allow-errors --to notebook"
+      nbconver_opts="--ExecutePreprocessor.timeout=60 --ExecutePreprocessor.kernel_name=python --log-level 20 --allow-errors --to notebook"
       mkdir -p $(System.DefaultWorkingDirectory)/nb_output
       nbconver_opts="$nbconver_opts --output-dir=$(System.DefaultWorkingDirectory)/nb_output"
       jupyter nbconvert $nbconver_opts --execute "Machine Learning in Notebooks Examples.ipynb"
