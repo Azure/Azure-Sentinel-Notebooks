@@ -16,8 +16,6 @@ jobs:
   displayName: Python install and test Notebooks
   strategy:
     matrix:
-      Python38:
-        python.version: '3.8'
       Python310:
         python.version: '3.10'
   pool:
@@ -37,6 +35,7 @@ jobs:
       path: $(PIP_CACHE_DIR)
     
   - script: |
+      python -m pip install --upgrade ipykernel
       python -m pip install --upgrade pip wheel
       python -m pip install --upgrade msticpy
       python -m pip install -r requirements.txt
@@ -72,7 +71,7 @@ jobs:
     displayName: 'URL Locale check'
 
 - job: SecurityChecks
-  displayName: Python install and test Notebooks
+  displayName: Security check
   pool:
     vmImage: 'windows-latest'
   steps:
