@@ -1,7 +1,7 @@
 ipywidgets==7.5.1
 transformers==4.5.1
-torch==1.10.2
+torch==1.13.1
 msticpy==2.1.2
-nltk==3.6.2
+nltk==3.6.6
 iocextract==1.13.1
 shap==0.41.0
