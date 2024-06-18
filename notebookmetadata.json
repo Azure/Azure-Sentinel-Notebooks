@@ -1,48 +1,47 @@
 [
   {
     "id": "AnomalyLookup",
-    "lastRevisedDate": "2022-08-04"
+    "lastRevisedDate": "2024-06-14"
   },
   {
     "id": "Office365Exploring",
-    "lastRevisedDate": "2021-04-27"
+    "lastRevisedDate": "2024-06-14"
   },
   {
     "id": "ProcessAlert",
-    "lastRevisedDate": "2022-02-18"
+    "lastRevisedDate": "2024-06-14"
   },
   {
     "id": "WindowsHostExplorer",
-    "lastRevisedDate": "2022-08-24"
+    "lastRevisedDate": "2024-06-14"
   },
   {
     "id": "AccountExplorer",
-    "lastRevisedDate": "2022-07-13"
-
+    "lastRevisedDate": "2024-06-14"
   },
   {
     "id": "DomainExplorer",
-    "lastRevisedDate": "2022-02-18"
+    "lastRevisedDate": "2024-06-14"
   },
   {
     "id": "IPExplorer",
-    "lastRevisedDate": "2022-07-13"
+    "lastRevisedDate": "2024-06-14"
   },
   {
     "id": "LinuxExplorer",
-    "lastRevisedDate": "2022-08-24"
+    "lastRevisedDate": "2024-06-14"
   },
   {
     "id": "Covid19",
-    "lastRevisedDate": "2022-02-18"
+    "lastRevisedDate": "2024-06-14"
   },
   {
     "id": "AlertTriage",
-    "lastRevisedDate": "2022-02-18"
+    "lastRevisedDate": "2024-06-14"
   },
   {
     "id": "GettingStarted",
-    "lastRevisedDate": "2022-04-20"
+    "lastRevisedDate": "2024-06-14"
   },
   {
     "id": "MDATP",
@@ -58,11 +57,11 @@
   },
   {
     "id": "MLExamples",
-    "lastRevisedDate": "2022-07-01"
+    "lastRevisedDate": "2024-06-14"
   },
   {
     "id": "Solarwinds",
-    "lastRevisedDate": "2022-05-05"
+    "lastRevisedDate": "2024-06-14"
   },
   {
     "id": "HandsOnAPI",
@@ -74,7 +73,7 @@
   },
   {
     "id": "ConfigEnv",
-    "lastRevisedDate": "2022-07-01"
+    "lastRevisedDate": "2024-06-14"
   },
   {
     "id": "CredScanBlob",
@@ -90,7 +89,7 @@
   },
   {
     "id": "Tour",
-    "lastRevisedDate": "2022-07-01"
+    "lastRevisedDate": "2024-06-14"
   },
   {
     "id": "LinuxCommands",
@@ -106,14 +105,14 @@
   },
   {
     "id": "MaliciousLinksInTeams",
-    "lastRevisedDate": "2022-05-09"
+    "lastRevisedDate": "2024-06-14"
   },
   {
     "id": "FusionIncidents",
-    "lastRevisedDate": "2022-12-15"
+    "lastRevisedDate": "2024-06-14"
   },
   {
     "id": "WAFSQLI",
-    "lastRevisedDate": "2023-02-17"
+    "lastRevisedDate": "2024-06-14"
   }
 ]
