@@ -1,5 +1,5 @@
 adal==1.2.7
-aiohttp==3.8.3
+aiohttp==3.10.2
 aiosignal==1.2.0
 anyio==3.6.1
 argon2-cffi==21.3.0
