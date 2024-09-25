@@ -143,4 +143,4 @@ webencodings==0.5.1
 widgetsnbextension==3.5.2
 wrapt==1.14.1
 yarl==1.8.1
-zipp==3.9.0
+zipp==3.19.1
