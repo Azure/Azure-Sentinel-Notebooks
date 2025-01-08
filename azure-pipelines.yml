@@ -16,8 +16,6 @@ jobs:
   displayName: Python install and test Notebooks
   strategy:
     matrix:
-      Python38:
-        python.version: '3.8'
       Python310:
         python.version: '3.10'
   pool:
@@ -37,6 +35,7 @@ jobs:
       path: $(PIP_CACHE_DIR)
     
   - script: |
+      python -m pip install --upgrade ipykernel
       python -m pip install --upgrade pip wheel
       python -m pip install --upgrade msticpy
       python -m pip install -r requirements.txt
@@ -47,7 +46,6 @@ jobs:
     displayName: 'Kernelspec check'
   - script: |
       python -m pip install nbconvert
-      python -m pip install jupyter_contrib_nbextensions
 
       nbconver_opts="--ExecutePreprocessor.timeout=60 --ExecutePreprocessor.kernel_name=python3 --log-level 20 --allow-errors --to notebook"
       mkdir -p $(System.DefaultWorkingDirectory)/nb_output
@@ -73,7 +71,7 @@ jobs:
     displayName: 'URL Locale check'
 
 - job: SecurityChecks
-  displayName: Python install and test Notebooks
+  displayName: Security check
   pool:
     vmImage: 'windows-latest'
   steps:

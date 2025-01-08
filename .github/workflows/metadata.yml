@@ -22,26 +22,3 @@ jobs:
       uses: jitterbit/get-changed-files@v1
       with:
         format: 'json'
-      
-    - name: echo output 
-      id: filechecker
-      env:
-          GIT_TRACE: 1
-          GIT_CURL_VERBOSE: 1
-      run: |
-        readarray -t added_modified_files <<<"$(jq -r '.[]' <<<'${{ steps.files.outputs.added_modified }}')"
-        
-        echo ${{ steps.files.outputs.added_modified }}
-        for added_modified_file in "${added_modified_files[@]}"; do
-          echo "::set-output name=ipynbmodified::${added_modified_file}"
-        done
-    
-    - name: Send message to ms teams
-      env:
-          GIT_TRACE: 1
-          GIT_CURL_VERBOSE: 1
-      if: contains( steps.files.outputs.added_modified , '.ipynb')
-      uses: dhollerbach/github-action-send-message-to-ms-teams@1.0.10
-      with:
-        webhook: 'https://outlook.office.com/webhook/9d8ccfc6-77ef-43ba-842c-79e8843f06df@72f988bf-86f1-41af-91ab-2d7cd011db47/IncomingWebhook/3c472f90416748e3a0999996346ed059/e3fe78bd-01e7-4377-8dc9-c6bbd843384b'
-        message: ${{ steps.files.outputs.added_modified }}

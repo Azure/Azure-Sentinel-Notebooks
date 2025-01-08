@@ -1,0 +1,3 @@
+azure.mgmt.loganalytics
+azure.monitor.query
+azure.monitor.ingestion

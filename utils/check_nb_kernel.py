@@ -65,14 +65,19 @@ IP_KERNEL_SPEC = {
         "language": "python",
         "display_name": "Python 3.8 - AzureML"
     },
+    "azureml_310": {
+        "name": "python310-sdkv2",
+        "language": "python",
+        "display_name": "Python 3.10 - SDK v2"
+    },
     'papermill': {'display_name': 'papermill', 'language': 'python', 'name': 'papermill'},
-    '.net-csharp': 
+    '.net-csharp':
    {'display_name': '.NET (C#)', 'language': 'C#', 'name': '.net-csharp'},
    '.net-powershell':
    {'display_name': '.NET (PowerShell)', 'language': 'PowerShell', 'name': '.net-powershell'},
 }
 
-_LEGAL_KERNELS = ["azureml_38", "papermill", ".net-csharp", ".net-powershell", "azureml_36"]
+_LEGAL_KERNELS = ["azureml_38", "papermill", ".net-csharp", ".net-powershell", "azureml_310"]
 
 
 def check_notebooks(nb_path: str, k_tgts: Iterable[str], verbose: bool = False):
