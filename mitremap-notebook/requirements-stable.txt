@@ -137,7 +137,7 @@ traitlets==5.4.0
 transformers==4.5.1
 types-cryptography==3.3.23
 typing_extensions==4.4.0
-urllib3==1.26.12
+urllib3==1.26.19
 wcwidth==0.2.5
 webencodings==0.5.1
 widgetsnbextension==3.5.2
