@@ -25,7 +25,7 @@ For this job specifically there is job yaml file included.  Action required by u
 - **CommonSecurityLogs**: Table for collecting events in the Common Event format from different security sources.
 
 ### Required Customer Input:
-- **WORKSPACE_NAME**: Customer Log Analytics workspace name.  This will be used for retrieving indicator and log data, as well as for outputing match results.  If 'None' is provided then the notebook will look for the first log analytics workspace that is not the Sentinel generated 'default' workspace.
+- **WORKSPACE_NAME**: Customer Log Analytics workspace name.  This will be used for retrieving indicator and log data, as well as for outputing match results.  If None is provided then the notebook will look for the first log analytics workspace that is not the Sentinel generated "System tables" workspace.  This is a string variable and must be wrapped in quotes.
 - **LOOKBACK_DAYS**: 14-365.  Lookback time period for logs matching.  Default 30.
 - **MATCH_MODE**: Which ThreatIntelIndicators to match against which logs: current (TI valid now), loose (ignore validity).  Default "current".
 - Enabled the log sources that you would like to match against under the `LOG SOURCE TOGGLES - SUPPORTED` section.
@@ -45,7 +45,7 @@ Results are aggregated by TI indicator with match counts and event references fo
 | TIReferenceId         | string           | Reference to the Threat Intelligence record (e.g., internal IoC ID or STIX ID). |
 | TIValue               | string           | Actual IoC or observable value that was matched (e.g., "malicious.com", name of TTP, etc.). |
 | MatchCount            | int              | Number of events or records in the environment that matched this TI object. |
-| EventReferences       | dynamic          | Array of matched events with format `[{"Table":"SigninLogs","RecordId":"abc123"}, ...]`. |
+| EventReferences       | dynamic          | Array of matched events with format `[{"Table":"Syslog","TimeGenerated":"2025-09-12T18:01:08.768Z","LogField":"SyslogMessage"},...]`. |
 | TTPs                  | dynamic          | Array of MITRE techniques (e.g., `["T1059", "T1071.001"]`) associated with the matched TI. |
 | ThreatActors          | dynamic          | Array of threat actor names tied to the matched TI object. |
 | EnrichmentContext     | dynamic          | Optional dictionary of enrichment tags (e.g., industry, country, malware family, confidence score). |
